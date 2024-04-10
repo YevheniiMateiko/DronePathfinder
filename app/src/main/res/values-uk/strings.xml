@@ -8,4 +8,5 @@
     <string name="menu_settings">Налаштування</string>
     <string name="frgt_routes_desc">Тут відображатимуться усі ваші маршрути</string>
     <string name="frgt_drones_desc">Тут відображатимуться усі ваші безпілотники</string>
+    <string name="menu_route_planning">Планування маршруту</string>
 </resources>

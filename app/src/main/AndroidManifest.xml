@@ -27,6 +27,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/menu_route_planning">
+        </activity>
     </application>
 
 </manifest>

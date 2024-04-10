@@ -12,4 +12,5 @@
     <string name="menu_settings">Settings</string>
     <string name="frgt_routes_desc">Here will display all your routes</string>
     <string name="frgt_drones_desc">Here will display all your drones</string>
+    <string name="menu_route_planning">Route planning</string>
 </resources>
