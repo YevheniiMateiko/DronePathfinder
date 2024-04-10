@@ -41,12 +41,12 @@ public class MapActivity extends AppCompatActivity{
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
-        requestPermissionsIfNecessary(arrayOf(
+        /*requestPermissionsIfNecessary(arrayOf(
                 // if you need to show the current location, uncomment the line below
                 // Manifest.permission.ACCESS_FINE_LOCATION,
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ));
+        ));*/
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MapActivity extends AppCompatActivity{
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (int i = 0; i < grantResults.length; i++) {
@@ -98,5 +98,5 @@ public class MapActivity extends AppCompatActivity{
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
+    }*/
 }
