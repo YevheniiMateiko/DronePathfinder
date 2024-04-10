@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_drawer_open">Відкрити навігаційне меню</string>
+    <string name="navigation_drawer_close">Закрити навігаційне меню</string>
+    <string name="action_select_all">Обрати всі</string>
+    <string name="menu_routes">Маршрути</string>
+    <string name="menu_drones">Безпілотники</string>
+    <string name="menu_settings">Налаштування</string>
+    <string name="frgt_routes_desc">Тут відображатимуться усі ваші маршрути</string>
+    <string name="frgt_drones_desc">Тут відображатимуться усі ваші безпілотники</string>
+</resources>
