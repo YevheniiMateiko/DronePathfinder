@@ -2,13 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.DronePathfinder" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/mint_200</item>
-        <item name="colorPrimaryVariant">@color/mint_700</item>
-        <item name="colorOnPrimary">@color/dark</item>
+        <item name="colorPrimary">@color/blue_60</item>
+        <item name="colorPrimaryVariant">@color/dark_blue_80</item>
+        <item name="colorOnPrimary">@color/light_blue_30</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/mint_200</item>
-        <item name="colorSecondaryVariant">@color/mint_200</item>
-        <item name="colorOnSecondary">@color/dark</item>
+        <item name="colorSecondary">@color/blue_60</item>
+        <item name="colorSecondaryVariant">@color/blue_60</item>
+        <item name="colorOnSecondary">@color/light_blue_30</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->

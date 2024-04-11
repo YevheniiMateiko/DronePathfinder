@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,7 +32,7 @@ public class RoutesFragment extends Fragment {
         textView.setText(routesDesc);
         //routesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        ImageButton btnNavigateToActivity = root.findViewById(R.id.add_route);
+        Button btnNavigateToActivity = root.findViewById(R.id.add_route);
         btnNavigateToActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

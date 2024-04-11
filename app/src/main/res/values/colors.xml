@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mint_200">#FF0d79b8</color>
-    <color name="mint_700">#FF0c4669</color>
-    <color name="dark">#FF90d0f0</color>
-    <color name="light">#FFd7edfa</color>
+    <color name="blue_60">#FF0d79b8</color>
+    <color name="dark_blue_80">#FF0c4669</color>
+    <color name="light_blue_30">#FF90d0f0</color>
+    <color name="light_blue_20">#FFdfeef7</color>
 </resources>

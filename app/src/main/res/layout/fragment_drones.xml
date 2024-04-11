@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light"
+    android:background="@color/light_blue_20"
     tools:context=".ui.drones.DronesFragment">
 
     <TextView
@@ -21,14 +21,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/add_drone"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/mint_200"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:src="@drawable/ic_add"
+        app:cornerRadius="90dp"
+        app:icon="@drawable/ic_add"
+        app:iconPadding="0dp"
+        app:iconSize="39dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
