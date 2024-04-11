@@ -4,4 +4,8 @@
     <color name="dark_blue_80">#FF0c4669</color>
     <color name="light_blue_30">#FF90d0f0</color>
     <color name="light_blue_20">#FFdfeef7</color>
+    <color name="gradient_start_blue">#FF66beed</color>
+    <color name="gradient_center_blue">#FF3495c9</color>
+    <color name="gradient_end_blue">#FF134966</color>
+
 </resources>

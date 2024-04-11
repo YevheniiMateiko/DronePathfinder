@@ -13,12 +13,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dronepathfinder.R;
 import com.example.dronepathfinder.databinding.FragmentDronesBinding;
 
-public class DronesFragment extends Fragment {
+public class DronesFragment extends Fragment
+{
 
     private FragmentDronesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState)
+    {
         DronesViewModel dronesViewModel =
                 new ViewModelProvider(this).get(DronesViewModel.class);
 
@@ -29,12 +31,12 @@ public class DronesFragment extends Fragment {
 
         String dronesDesc = getString(R.string.frgt_drones_desc);
         textView.setText(dronesDesc);
-        //dronesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         super.onDestroyView();
         binding = null;
     }

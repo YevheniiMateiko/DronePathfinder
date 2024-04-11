@@ -16,12 +16,14 @@ import com.example.dronepathfinder.MapActivity;
 import com.example.dronepathfinder.R;
 import com.example.dronepathfinder.databinding.FragmentRoutesBinding;
 
-public class RoutesFragment extends Fragment {
+public class RoutesFragment extends Fragment
+{
 
     private FragmentRoutesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState)
+    {
         RoutesViewModel routesViewModel = new ViewModelProvider(this).get(RoutesViewModel.class);
 
         binding = FragmentRoutesBinding.inflate(inflater, container, false);
@@ -30,13 +32,13 @@ public class RoutesFragment extends Fragment {
         final TextView textView = binding.textRoutes;
         String routesDesc = getString(R.string.frgt_routes_desc);
         textView.setText(routesDesc);
-        //routesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         Button btnNavigateToActivity = root.findViewById(R.id.add_route);
-        btnNavigateToActivity.setOnClickListener(new View.OnClickListener() {
+        btnNavigateToActivity.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                // Create an Intent to navigate to your target activity
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(getActivity(), MapActivity.class);
                 startActivity(intent);
             }
@@ -46,7 +48,8 @@ public class RoutesFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         super.onDestroyView();
         binding = null;
     }
