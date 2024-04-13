@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <org.osmdroid.views.MapView android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-</LinearLayout>
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/save_route"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:src="@drawable/ic_save"
+        app:cornerRadius="90dp"
+        app:icon="@drawable/ic_save"
+        app:iconPadding="0dp"
+        app:iconSize="39dp"
+        app:iconTint="#FFFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+    </org.osmdroid.views.MapView>
+</androidx.constraintlayout.widget.ConstraintLayout>

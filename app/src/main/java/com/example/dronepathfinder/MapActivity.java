@@ -1,18 +1,27 @@
 package com.example.dronepathfinder;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -22,7 +31,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapActivity extends AppCompatActivity
 {
@@ -30,10 +41,12 @@ public class MapActivity extends AppCompatActivity
     private GestureDetector gestureDetector;
     private DijkstraAlgorithm dijkstra;
     private List<GeoPoint> points;
+    private List<GeoPoint> shortestPath = null;
+    private Map<GeoPoint, Marker> markersMap;
+    private Polyline currentLine;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         Context ctx = getApplicationContext();
@@ -49,32 +62,100 @@ public class MapActivity extends AppCompatActivity
 
         dijkstra = new DijkstraAlgorithm();
         points = new ArrayList<>();
+        markersMap = new HashMap<>();
+        currentLine = null;
+
+        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.map_location_pin, null);
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        Drawable customIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, (int) (48.0f * getResources().getDisplayMetrics().density), (int) (48.0f * getResources().getDisplayMetrics().density), true));
+
+        Button btnSaveRoute = findViewById(R.id.save_route);
+        btnSaveRoute.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (points.size() > 1)
+                {
+                    saveNewRoute("New route", shortestPath, 0);
+                }
+            }
+        });
+
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                GeoPoint point = (GeoPoint) map.getProjection().fromPixels((int) e.getX(), (int) e.getY());
+            public boolean onSingleTapConfirmed(MotionEvent e)
+            {
+                GeoPoint tapPoint = (GeoPoint) map.getProjection().fromPixels((int) e.getX(), (int) e.getY());
+                boolean isMarkerTapped = false;
 
-                points.add(point);
-                Marker marker = new Marker(map);
-                marker.setPosition(point);
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                map.getOverlays().add(marker);
+                Log.d("Tap", "GeoPoint: " + tapPoint);
+
+                for (Marker marker : markersMap.values())
+                {
+                    Log.d("Tap", "Marker position: " + marker.getPosition());
+
+                    if (marker.hitTest(e, map))
+                    {
+                        map.getOverlays().remove(marker);
+                        markersMap.remove(marker.getPosition());
+                        points.remove(marker.getPosition());
+                        isMarkerTapped = true;
+                        break;
+                    }
+                }
+
+                if (!isMarkerTapped)
+                {
+                    Marker marker = new Marker(map);
+                    marker.setPosition(tapPoint);
+                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                    marker.setIcon(customIcon);
+
+                    map.getOverlays().add(marker);
+                    markersMap.put(tapPoint, marker);
+                    points.add(tapPoint);
+
+                    Log.d("Marker", "Marker created at Lat: " + tapPoint.getLatitude() + ", Lon: " + tapPoint.getLongitude());
+
+                    /*
+                    Polygon boundsPolygon = new Polygon(map);
+                    BoundingBox boundingBox = marker.getBounds();
+                    List<GeoPoint> boundsPoints = new ArrayList<>();
+                    boundsPoints.add(new GeoPoint(boundingBox.getLatNorth(), boundingBox.getLonWest()));
+                    boundsPoints.add(new GeoPoint(boundingBox.getLatNorth(), boundingBox.getLonEast()));
+                    boundsPoints.add(new GeoPoint(boundingBox.getLatSouth(), boundingBox.getLonEast()));
+                    boundsPoints.add(new GeoPoint(boundingBox.getLatSouth(), boundingBox.getLonWest()));
+                    boundsPolygon.setPoints(boundsPoints);
+
+                    boundsPolygon.getFillPaint().setColor(Color.TRANSPARENT);
+                    boundsPolygon.getOutlinePaint().setColor(Color.RED);
+                    boundsPolygon.getOutlinePaint().setStrokeWidth(2);
+
+                    map.getOverlays().add(boundsPolygon);
+
+                    Log.d("Bounds", "Bounds created for Lat: " + boundingBox.getLatNorth() + ", Lon: " + boundingBox.getLonWest()
+                            + " to Lat: " + boundingBox.getLatSouth() + ", Lon: " + boundingBox.getLonEast());
+                     */
+                }
 
                 if (points.size() > 1)
                 {
                     dijkstra.initializeGraph(points);
-                    List<GeoPoint> shortestPath = dijkstra.findShortestPath(points.get(0), points.get(points.size() - 1));
+                    shortestPath = dijkstra.findShortestPath(points.get(0), points.get(points.size() - 1));
                     displayShortestPath(shortestPath);
                 }
 
                 map.invalidate();
                 return true;
             }
-
         });
 
-        map.setOnTouchListener((v, event) ->
-        {
+        map.setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
             return false;
         });
@@ -127,17 +208,30 @@ public class MapActivity extends AppCompatActivity
 
     private void displayShortestPath(List<GeoPoint> path)
     {
-        Log.d("MapActivity", "Displaying shortest path with size: " + path.size());
-        for (GeoPoint point : path)
+        if (currentLine != null)
         {
+            map.getOverlays().remove(currentLine);
+        }
+
+        Log.d("MapActivity", "Displaying shortest path with size: " + path.size());
+        for (GeoPoint point : path) {
             Log.d("MapActivity", "Point: " + point.getLatitude() + ", " + point.getLongitude());
         }
 
-        Polyline line = new Polyline();
-        line.setPoints(path);
-        line.setColor(Color.BLUE);
-        line.setWidth(10.0f);
+        currentLine = new Polyline();
+        currentLine.setPoints(path);
+        currentLine.setColor(Color.BLUE);
+        currentLine.setWidth(10.0f);
 
-        map.getOverlays().add(line);
+        map.getOverlays().add(currentLine);
+        map.invalidate();
+    }
+
+    public void saveNewRoute(String name, List<GeoPoint> points, double length)
+    {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("route", new Route(name, points, length));
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

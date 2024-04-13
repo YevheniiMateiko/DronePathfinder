@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation ("org.osmdroid:osmdroid-android:6.1.18")
+    implementation ("com.google.code.gson:gson:2.8.6")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
