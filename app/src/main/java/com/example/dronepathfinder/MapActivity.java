@@ -135,7 +135,7 @@ public class MapActivity extends AppCompatActivity
 
         Polyline line = new Polyline();
         line.setPoints(path);
-        line.setColor(Color.RED);
+        line.setColor(Color.BLUE);
         line.setWidth(10.0f);
 
         map.getOverlays().add(line);

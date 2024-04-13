@@ -2,8 +2,8 @@
     <string name="app_name" translatable="false">DronePathfinder</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Android Studio</string>
-    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_title" translatable="false">Yevhenii Mateiko</string>
+    <string name="nav_header_subtitle" translatable="false">mateyko99evgeniy@gmail.com</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_select_all">Select all</string>
 
