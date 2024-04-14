@@ -56,10 +56,12 @@ public class RoutesFragment extends Fragment
 
         textView = binding.textRoutes;
         updateRouteDesc();
-        adapter = new ArrayAdapter<Route>(getActivity(), android.R.layout.simple_list_item_1, routeList) {
+        adapter = new ArrayAdapter<Route>(getActivity(), android.R.layout.simple_list_item_1, routeList)
+        {
             @NonNull
             @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent)
+            {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
 
@@ -145,7 +147,8 @@ public class RoutesFragment extends Fragment
             textView.setVisibility(View.VISIBLE);
     }
 
-    private void showDeleteConfirmationDialog(Route route, int position) {
+    private void showDeleteConfirmationDialog(Route route, int position)
+    {
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.alert_delete_route_title))
                 .setMessage(getString(R.string.alert_delete_route_msg) + " '" + route.getName() + "'?")
@@ -163,28 +166,39 @@ public class RoutesFragment extends Fragment
                 .show();
     }
 
-    private void saveRoutesToSharedPreferences()
-    {
+    private void saveRoutesToSharedPreferences() {
+        // Отримання SharedPreferences з назвою "RoutesPref" у приватному режимі
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("RoutesPref", Context.MODE_PRIVATE);
+        // Отримання редактора для SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Створення нового об'єкта Gson для серіалізації
         Gson gson = new Gson();
+        // Серіалізація списку маршрутів у JSON рядок
         String jsonRoutes = gson.toJson(routeList);
+        // Збереження серіалізованого JSON рядка у SharedPreferences під ключем "SavedRoutes"
         editor.putString("SavedRoutes", jsonRoutes);
+        // Застосування змін до SharedPreferences
         editor.apply();
     }
 
-    private void loadRoutesFromSharedPreferences()
-    {
+    // Метод для завантаження списку маршрутів з SharedPreferences
+    private void loadRoutesFromSharedPreferences() {
+        // Отримання SharedPreferences, де зберігаються маршрути
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("RoutesPref", Context.MODE_PRIVATE);
+        // Створення нового об'єкта Gson для десеріалізації
         Gson gson = new Gson();
+        // Отримання збереженого JSON рядка з маршрутами
         String jsonRoutes = sharedPreferences.getString("SavedRoutes", null);
+        // Визначення типу для десеріалізації списку маршрутів
         Type type = new TypeToken<ArrayList<Route>>() {}.getType();
+        // Десеріалізація JSON рядка у список маршрутів
         routeList = gson.fromJson(jsonRoutes, type);
 
+        // Якщо список маршрутів не існує, створення нового порожнього списку
         if (routeList == null)
             routeList = new ArrayList<>();
-
     }
+
 
     @Override
     public void onPause()
