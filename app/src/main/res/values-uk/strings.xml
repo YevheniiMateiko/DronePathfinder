@@ -9,4 +9,13 @@
     <string name="frgt_routes_desc">Тут відображатимуться усі ваші маршрути</string>
     <string name="frgt_drones_desc">Тут відображатимуться усі ваші безпілотники</string>
     <string name="menu_route_planning">Планування маршруту</string>
+    <string name="alert_delete_route_msg">Ви впевнені, що хочете видалити цей маршрут?</string>
+    <string name="alert_delete_route_title">Видалити маршрут</string>
+    <string name="menu_pos_answer">Так</string>
+    <string name="menu_neg_answer">Ні</string>
+    <string name="menu_listview_name">Назва</string>
+    <string name="menu_listview_start">Початок:</string>
+    <string name="menu_listview_end">Кінець:</string>
+    <string name="menu_listview_length">Довжина:</string>
+    <string name="menu_listview_km">км</string>
 </resources>

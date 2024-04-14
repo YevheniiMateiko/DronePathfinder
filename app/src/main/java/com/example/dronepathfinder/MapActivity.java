@@ -80,7 +80,7 @@ public class MapActivity extends AppCompatActivity
             {
                 if (points.size() > 1)
                 {
-                    saveNewRoute("New route", shortestPath, 0);
+                    saveNewRoute("New route", shortestPath);
                 }
             }
         });
@@ -227,10 +227,10 @@ public class MapActivity extends AppCompatActivity
         map.invalidate();
     }
 
-    public void saveNewRoute(String name, List<GeoPoint> points, double length)
+    public void saveNewRoute(String name, List<GeoPoint> points)
     {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("route", new Route(name, points, length));
+        returnIntent.putExtra("route", new Route(name, points));
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
