@@ -40,7 +40,8 @@ public class RoutesFragment extends Fragment
     private TextView textView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         loadRoutesFromSharedPreferences();
     }
@@ -63,7 +64,8 @@ public class RoutesFragment extends Fragment
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
 
                 Route route = getItem(position);
-                if (route != null) {
+                if (route != null)
+                {
                     String routeInfo =
                                     getString(R.string.menu_listview_name)
                                     + " '" + route.getName() + "'"
@@ -87,7 +89,8 @@ public class RoutesFragment extends Fragment
         ActivityResultLauncher<Intent> mapActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null)
+                    {
                         Route route = (Route) result.getData().getSerializableExtra("route");
                         updateRouteList(route);
                         updateRouteDesc();
@@ -95,13 +98,16 @@ public class RoutesFragment extends Fragment
                 }
         );
 
-        binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 Route routeToRemove = adapter.getItem(position);
-                if (routeToRemove != null) {
+
+                if (routeToRemove != null)
                     showDeleteConfirmationDialog(routeToRemove, position);
-                }
+
                 return true;
             }
         });
@@ -134,21 +140,19 @@ public class RoutesFragment extends Fragment
     public void updateRouteDesc()
     {
         if (!routeList.isEmpty())
-        {
             textView.setVisibility(View.GONE);
-        }
         else
-        {
             textView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void showDeleteConfirmationDialog(Route route, int position) {
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.alert_delete_route_title))
                 .setMessage(getString(R.string.alert_delete_route_msg) + " '" + route.getName() + "'?")
-                .setPositiveButton(R.string.menu_pos_answer, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton(R.string.menu_pos_answer, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         routeList.remove(position);
                         adapter.notifyDataSetChanged();
                         saveRoutesToSharedPreferences();
@@ -177,9 +181,8 @@ public class RoutesFragment extends Fragment
         Type type = new TypeToken<ArrayList<Route>>() {}.getType();
         routeList = gson.fromJson(jsonRoutes, type);
 
-        if (routeList == null) {
+        if (routeList == null)
             routeList = new ArrayList<>();
-        }
 
     }
 

@@ -145,8 +145,7 @@ public class MapActivity extends AppCompatActivity
 
                 if (points.size() > 1)
                 {
-                    dijkstra.initializeGraph(points);
-                    shortestPath = dijkstra.findShortestPath(points.get(0), points.get(points.size() - 1));
+                    shortestPath = dijkstra.findShortestPath(points);
                     displayShortestPath(shortestPath);
                 }
 
@@ -209,9 +208,7 @@ public class MapActivity extends AppCompatActivity
     private void displayShortestPath(List<GeoPoint> path)
     {
         if (currentLine != null)
-        {
             map.getOverlays().remove(currentLine);
-        }
 
         Log.d("MapActivity", "Displaying shortest path with size: " + path.size());
         for (GeoPoint point : path) {
