@@ -145,8 +145,8 @@ public class RoutesFragment extends Fragment
 
     private void showDeleteConfirmationDialog(Route route, int position) {
         new AlertDialog.Builder(getContext())
-                .setTitle(getString(R.string.alert_delete_route_title) + route.getName() + "?")
-                .setMessage(getString(R.string.alert_delete_route_msg))
+                .setTitle(getString(R.string.alert_delete_route_title))
+                .setMessage(getString(R.string.alert_delete_route_msg) + " '" + route.getName() + "'?")
                 .setPositiveButton(R.string.menu_pos_answer, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         routeList.remove(position);

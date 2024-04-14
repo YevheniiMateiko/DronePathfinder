@@ -13,8 +13,8 @@
     <string name="frgt_routes_desc">Here will display all your routes</string>
     <string name="frgt_drones_desc">Here will display all your drones</string>
     <string name="menu_route_planning">Route planning</string>
-    <string name="alert_delete_route_title">Delete route</string>
-    <string name="alert_delete_route_msg">Are you sure you want to delete this route?</string>
+    <string name="alert_delete_route_title">Delete route?</string>
+    <string name="alert_delete_route_msg">Are you sure you want to delete route</string>
     <string name="menu_pos_answer">Yes</string>
     <string name="menu_neg_answer">No</string>
     <string name="menu_listview_name">Name</string>
