@@ -15,6 +15,15 @@ public class DijkstraAlgorithm
     private Map<GeoPoint, Map<GeoPoint, Double>> graph = new HashMap<>();
     private Map<GeoPoint, GeoPoint> predecessors = new HashMap<>();
 
+    public Map<GeoPoint, Map<GeoPoint, Double>> getGraph()
+    {
+        return graph;
+    }
+    public Map<GeoPoint, GeoPoint> getPredecessors()
+    {
+        return predecessors;
+    }
+
     public void initializeGraph(List<GeoPoint> points) {
         // Проходження по списку точок, крім останньої
         for (int i = 0; i < points.size() - 1; i++) {
@@ -41,8 +50,8 @@ public class DijkstraAlgorithm
         GeoPoint end = points.get(points.size() - 1);
 
         // Перевірка наявності початкової та кінцевої точок у графі
-        Log.d("DijkstraAlgorithm", "Graph contains start: "
-                + graph.containsKey(start) + ", end: " + graph.containsKey(end));
+        /*Log.d("DijkstraAlgorithm", "Graph contains start: "
+                + graph.containsKey(start) + ", end: " + graph.containsKey(end));*/
 
         // Ініціалізація карти відстаней та пріоритетної черги
         Map<GeoPoint, Double> distances = new HashMap<>();
@@ -62,8 +71,8 @@ public class DijkstraAlgorithm
         {
             GeoPoint current = queue.poll();
 
-            Log.d("DijkstraAlgorithm", "Current vertex: "
-                    + current.getLatitude() + ", " + current.getLongitude());
+            /*Log.d("DijkstraAlgorithm", "Current vertex: "
+                    + current.getLatitude() + ", " + current.getLongitude());*/
 
             Map<GeoPoint, Double> edges = graph.get(current);
             if (edges == null)
@@ -90,7 +99,7 @@ public class DijkstraAlgorithm
         return new ArrayList<>();
     }
 
-    private List<GeoPoint> reconstructPath(GeoPoint end)
+    protected List<GeoPoint> reconstructPath(GeoPoint end)
     {
         List<GeoPoint> path = new ArrayList<>();
         GeoPoint step = end;
