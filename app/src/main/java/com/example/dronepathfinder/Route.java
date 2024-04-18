@@ -22,7 +22,7 @@ public class Route implements Serializable {
     }
 
     private String name;
-    private String drone = "Mavic 3";
+    private String drone = null;
     private List<GeoPoint> points;
     private int num_of_points;
     private double length;
@@ -34,7 +34,7 @@ public class Route implements Serializable {
         this.points = points;
         this.num_of_points = points.size();
         this.length = calculateTotalLength(points);
-        this.status = Status.GOOD;
+        this.status = Status.WARNING;
     }
 
 
