@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -56,34 +57,44 @@ public class RoutesFragment extends Fragment
 
         textView = binding.textRoutes;
         updateRouteDesc();
-        adapter = new ArrayAdapter<Route>(getActivity(), android.R.layout.simple_list_item_1, routeList)
+        adapter = new ArrayAdapter<Route>(getActivity(), R.layout.custom_list_item, routeList)
         {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent)
             {
-                View view = super.getView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                if (convertView == null)
+                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.custom_list_item, parent, false);
+
+                TextView lv_item_name = convertView.findViewById(R.id.listview_route_name_value);
+                TextView lv_item_drone = convertView.findViewById(R.id.listview_route_drone_name_value);
+                TextView lv_item_start = convertView.findViewById(R.id.listview_route_start_value);
+                TextView lv_item_end = convertView.findViewById(R.id.listview_route_end_value);
+                TextView lv_item_length = convertView.findViewById(R.id.listview_route_length_value);
+                ImageView lv_item_status = convertView.findViewById(R.id.listview_route_status_value);
 
                 Route route = getItem(position);
                 if (route != null)
                 {
-                    String routeInfo =
-                                    getString(R.string.menu_listview_name)
-                                    + " '" + route.getName() + "'"
-                                    + "\n" + getString(R.string.menu_listview_start)
-                                    + " " + String.format("%.4f", route.getStart().first)
-                                    + " " + String.format("%.4f", route.getStart().second)
-                                    + "\n" + getString(R.string.menu_listview_end)
-                                    + " " + String.format("%.4f", route.getEnd().first)
-                                    + " " + String.format("%.4f", route.getEnd().second)
-                                    + "\n" + getString(R.string.menu_listview_length)
-                                    + " " + String.format("%.3f",route.getLength()/1_000)
-                                    + " " + getString(R.string.menu_listview_km);
-                    textView.setText(routeInfo);
+                    lv_item_name.setText(route.getName());
+                    lv_item_drone.setText(route.getDrone());
+                    lv_item_start.setText(String.format("%.3f, %.3f", route.getStart().first, route.getStart().second));
+                    lv_item_end.setText(String.format("%.3f, %.3f", route.getEnd().first, route.getEnd().second));
+                    lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_listview_route_km)));
+                    switch (route.getStatus()) {
+                        case GOOD:
+                            lv_item_status.setImageResource(R.drawable.ic_checkmark);
+                            break;
+                        case WARNING:
+                            lv_item_status.setImageResource(R.drawable.ic_warning);
+                            break;
+                        default:
+                            lv_item_status.setImageResource(R.drawable.ic_warning);
+                            break;
+                    }
                 }
 
-                return view;
+                return convertView;
             }
         };
         binding.listViewRoutes.setAdapter(adapter);

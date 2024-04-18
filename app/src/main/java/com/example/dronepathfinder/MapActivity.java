@@ -190,7 +190,7 @@ public class MapActivity extends AppCompatActivity
         map.onPause();
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -203,7 +203,7 @@ public class MapActivity extends AppCompatActivity
             {
             }
         }
-    }
+    }*/
 
     private void displayShortestPath(List<GeoPoint> path)
     {

@@ -13,16 +13,30 @@ import java.net.URL;
 import java.util.List;
 
 public class Route implements Serializable {
+
+    public enum Status
+    {
+        GOOD,
+        WARNING
+
+    }
+
     private String name;
+    private String drone = "Mavic 3";
     private List<GeoPoint> points;
+    private int num_of_points;
     private double length;
+    private Status status;
 
     public Route(String name, List<GeoPoint> points)
     {
         this.name = name;
         this.points = points;
+        this.num_of_points = points.size();
         this.length = calculateTotalLength(points);
+        this.status = Status.GOOD;
     }
+
 
     public List<GeoPoint> getPoints()
     {
@@ -32,9 +46,9 @@ public class Route implements Serializable {
     {
         return name;
     }
-    public double getLength()
+    public String getDrone()
     {
-        return length;
+        return drone;
     }
     public Pair<Double, Double> getStart()
     {
@@ -43,6 +57,22 @@ public class Route implements Serializable {
     public Pair<Double, Double> getEnd()
     {
         return new Pair<Double, Double>(points.get(points.size() - 1).getLatitude(), points.get(points.size() - 1).getLongitude());
+    }
+    public double getLength()
+    {
+        return length;
+    }
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setDrone(String drone)
+    {
+        this.drone = drone;
+    }
+    public void setStatus(Status status)
+    {
+        this.status = status;
     }
 
     private double calculateTotalLength(List<GeoPoint> points)

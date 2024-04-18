@@ -40,7 +40,7 @@ public class DijkstraAlgorithm
             graph.computeIfAbsent(next, k -> new HashMap<>()).put(current, weight);
         }
     }
-    public List<GeoPoint> findShortestPath(List<GeoPoint> points)
+    public List<GeoPoint> findShortestPath(List<GeoPoint> points) //latitude i longtitude
     {
         // Ініціалізація графа зі списку точок
         initializeGraph(points);

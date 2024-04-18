@@ -17,9 +17,10 @@
     <string name="alert_delete_route_msg">Are you sure you want to delete route</string>
     <string name="menu_pos_answer">Yes</string>
     <string name="menu_neg_answer">No</string>
-    <string name="menu_listview_name">Name</string>
-    <string name="menu_listview_start">Start:</string>
-    <string name="menu_listview_end">End:</string>
-    <string name="menu_listview_length">Length:</string>
-    <string name="menu_listview_km">km</string>
+    <string name="menu_listview_route_name">Route:</string>
+    <string name="menu_listview_route_start">Start:</string>
+    <string name="menu_listview_route_end">End:</string>
+    <string name="menu_listview_route_length">Length:</string>
+    <string name="menu_listview_route_km">km</string>
+    <string name="menu_listview_drone_name">Drone:</string>
 </resources>

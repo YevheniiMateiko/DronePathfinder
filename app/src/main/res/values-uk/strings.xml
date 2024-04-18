@@ -13,9 +13,10 @@
     <string name="alert_delete_route_title">Видалити маршрут?</string>
     <string name="menu_pos_answer">Так</string>
     <string name="menu_neg_answer">Ні</string>
-    <string name="menu_listview_name">Назва</string>
-    <string name="menu_listview_start">Початок:</string>
-    <string name="menu_listview_end">Кінець:</string>
-    <string name="menu_listview_length">Довжина:</string>
-    <string name="menu_listview_km">км</string>
+    <string name="menu_listview_route_name">Маршрут:</string>
+    <string name="menu_listview_route_start">Початок:</string>
+    <string name="menu_listview_route_end">Кінець:</string>
+    <string name="menu_listview_route_length">Довжина:</string>
+    <string name="menu_listview_route_km">км</string>
+    <string name="menu_listview_drone_name">Безпілотник:</string>
 </resources>
