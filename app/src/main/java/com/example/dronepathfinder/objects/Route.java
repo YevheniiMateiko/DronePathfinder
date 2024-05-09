@@ -1,15 +1,10 @@
-package com.example.dronepathfinder;
+package com.example.dronepathfinder.objects;
 
 import android.util.Pair;
 
-import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 public class Route implements Serializable {
@@ -17,24 +12,28 @@ public class Route implements Serializable {
     public enum Status
     {
         GOOD,
-        WARNING
+        WARNING,
+        BAD
 
     }
 
     private String name;
-    private String drone = null;
     private List<GeoPoint> points;
-    private int num_of_points;
+    //private int num_of_points;
     private double length;
+    private Drone drone;
     private Status status;
+    private boolean pinned;
 
     public Route(String name, List<GeoPoint> points)
     {
         this.name = name;
         this.points = points;
-        this.num_of_points = points.size();
+        //this.num_of_points = points.size();
         this.length = calculateTotalLength(points);
-        this.status = Status.WARNING;
+        this.drone = null;
+        this.status = updateStatus();
+        this.pinned = false;
     }
 
 
@@ -46,7 +45,7 @@ public class Route implements Serializable {
     {
         return name;
     }
-    public String getDrone()
+    public Drone getDrone()
     {
         return drone;
     }
@@ -66,13 +65,19 @@ public class Route implements Serializable {
         return status;
     }
 
-    public void setDrone(String drone)
+    public void setDrone(Drone drone)
     {
         this.drone = drone;
     }
-    public void setStatus(Status status)
+    private Status updateStatus()
     {
-        this.status = status;
+        if (this.drone == null)
+            return Status.WARNING;
+        else if (this.drone.getMaxFlightDistance() < this.length) {
+            return Status.BAD;
+        }
+        else
+            return Status.GOOD;
     }
 
     private double calculateTotalLength(List<GeoPoint> points)

@@ -1,8 +1,9 @@
-package com.example.dronepathfinder;
+package com.example.dronepathfinder.ui;
 
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.example.dronepathfinder.R;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatDelegate;

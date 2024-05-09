@@ -1,4 +1,4 @@
-package com.example.dronepathfinder;
+package com.example.dronepathfinder.algorithms;
 
 import android.util.Log;
 
@@ -99,7 +99,7 @@ public class DijkstraAlgorithm
         return new ArrayList<>();
     }
 
-    protected List<GeoPoint> reconstructPath(GeoPoint end)
+    public List<GeoPoint> reconstructPath(GeoPoint end)
     {
         List<GeoPoint> path = new ArrayList<>();
         GeoPoint step = end;

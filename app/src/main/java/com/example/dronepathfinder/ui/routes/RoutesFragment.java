@@ -21,9 +21,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.dronepathfinder.MapActivity;
+import com.example.dronepathfinder.ui.MapActivity;
 import com.example.dronepathfinder.R;
-import com.example.dronepathfinder.Route;
+import com.example.dronepathfinder.objects.Route;
 import com.example.dronepathfinder.databinding.FragmentRoutesBinding;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -77,7 +77,7 @@ public class RoutesFragment extends Fragment
                 if (route != null)
                 {
                     lv_item_name.setText(route.getName());
-                    lv_item_drone.setText(route.getDrone());
+                    lv_item_drone.setText(route.getDrone().getName());
                     lv_item_start.setText(String.format("%.3f, %.3f", route.getStart().first, route.getStart().second));
                     lv_item_end.setText(String.format("%.3f, %.3f", route.getEnd().first, route.getEnd().second));
                     lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_listview_route_km)));
