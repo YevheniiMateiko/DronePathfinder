@@ -77,7 +77,10 @@ public class RoutesFragment extends Fragment
                 if (route != null)
                 {
                     lv_item_name.setText(route.getName());
-                    lv_item_drone.setText(route.getDrone().getName());
+                    if (route.getDrone() != null)
+                    {
+                        lv_item_drone.setText(route.getDrone().getName());
+                    }
                     lv_item_start.setText(String.format("%.3f, %.3f", route.getStart().first, route.getStart().second));
                     lv_item_end.setText(String.format("%.3f, %.3f", route.getEnd().first, route.getEnd().second));
                     lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_listview_route_km)));
@@ -161,9 +164,9 @@ public class RoutesFragment extends Fragment
     private void showDeleteConfirmationDialog(Route route, int position)
     {
         new AlertDialog.Builder(getContext())
-                .setTitle(getString(R.string.alert_delete_route_title))
-                .setMessage(getString(R.string.alert_delete_route_msg) + " '" + route.getName() + "'?")
-                .setPositiveButton(R.string.menu_pos_answer, new DialogInterface.OnClickListener()
+                .setTitle(getString(R.string.alert_title_delete_route))
+                .setMessage(getString(R.string.alert_msg_delete_route) + " '" + route.getName() + "'?")
+                .setPositiveButton(R.string.alert_answer_positive, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -172,7 +175,7 @@ public class RoutesFragment extends Fragment
                         saveRoutesToSharedPreferences();
                     }
                 })
-                .setNegativeButton(R.string.menu_neg_answer, null)
+                .setNegativeButton(R.string.alert_answer_negative, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

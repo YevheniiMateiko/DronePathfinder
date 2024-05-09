@@ -1,5 +1,6 @@
 package com.example.dronepathfinder.objects;
 
+import android.util.Log;
 import android.util.Pair;
 
 import org.osmdroid.util.GeoPoint;
@@ -19,16 +20,19 @@ public class Route implements Serializable {
 
     private String name;
     private List<GeoPoint> points;
+    private List<Pair<GeoPoint, Double>> avoidancePoints;
     //private int num_of_points;
     private double length;
     private Drone drone;
     private Status status;
     private boolean pinned;
 
-    public Route(String name, List<GeoPoint> points)
+    public Route(String name, List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
     {
+        Log.d("New route", "Created new route with name " + name);
         this.name = name;
         this.points = points;
+        this.avoidancePoints = avoidancePoints;
         //this.num_of_points = points.size();
         this.length = calculateTotalLength(points);
         this.drone = null;
@@ -36,18 +40,17 @@ public class Route implements Serializable {
         this.pinned = false;
     }
 
-
-    public List<GeoPoint> getPoints()
-    {
-        return points;
-    }
     public String getName()
     {
         return name;
     }
-    public Drone getDrone()
+    public List<GeoPoint> getPoints()
     {
-        return drone;
+        return points;
+    }
+    public List<Pair<GeoPoint, Double>> getAvoidancePoints()
+    {
+        return avoidancePoints;
     }
     public Pair<Double, Double> getStart()
     {
@@ -61,6 +64,10 @@ public class Route implements Serializable {
     {
         return length;
     }
+    public Drone getDrone()
+    {
+        return drone;
+    }
     public Status getStatus() {
         return status;
     }
@@ -73,7 +80,8 @@ public class Route implements Serializable {
     {
         if (this.drone == null)
             return Status.WARNING;
-        else if (this.drone.getMaxFlightDistance() < this.length) {
+        else if (this.drone.getMaxFlightDistance() < this.length)
+        {
             return Status.BAD;
         }
         else

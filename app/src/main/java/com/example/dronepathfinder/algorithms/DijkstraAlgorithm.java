@@ -1,6 +1,7 @@
 package com.example.dronepathfinder.algorithms;
 
 import android.util.Log;
+import android.util.Pair;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -24,26 +25,36 @@ public class DijkstraAlgorithm
         return predecessors;
     }
 
-    public void initializeGraph(List<GeoPoint> points) {
-        // Проходження по списку точок, крім останньої
-        for (int i = 0; i < points.size() - 1; i++) {
-            // Отримання поточної та наступної точок
+    public void initializeGraph(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
+    {
+        for (int i = 0; i < points.size() - 1; i++)
+        {
             GeoPoint current = points.get(i);
             GeoPoint next = points.get(i + 1);
 
-            // Розрахунок ваги ребра між поточною та наступною точками
             double weight = current.distanceToAsDouble(next);
 
-            // Додавання ребра з поточної точки до наступної з відповідною вагою
             graph.computeIfAbsent(current, k -> new HashMap<>()).put(next, weight);
-            // Додавання ребра з наступної точки до поточної з відповідною вагою
             graph.computeIfAbsent(next, k -> new HashMap<>()).put(current, weight);
         }
+
+        for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints) {
+            GeoPoint point = avoidancePoint.first;
+            double radius = avoidancePoint.second;
+
+            for (GeoPoint existingPoint : graph.keySet())
+            {
+                double distance = existingPoint.distanceToAsDouble(point);
+                if (distance <= radius) {
+                    graph.get(existingPoint).remove(point);
+                }
+            }
+        }
     }
-    public List<GeoPoint> findShortestPath(List<GeoPoint> points) //latitude i longtitude
+    public List<GeoPoint> findShortestPath(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
     {
         // Ініціалізація графа зі списку точок
-        initializeGraph(points);
+        initializeGraph(points, avoidancePoints);
 
         // Визначення початкової та кінцевої точок як першої та останньої у списку
         GeoPoint start = points.get(0);
@@ -81,7 +92,7 @@ public class DijkstraAlgorithm
             if (current.equals(end))
                 return reconstructPath(end);
 
-            for (Map.Entry<GeoPoint, Double> edge : graph.get(current).entrySet())
+            for (Map.Entry<GeoPoint, Double> edge : edges.entrySet())
             {
                 GeoPoint neighbor = edge.getKey();
                 Double weight = edge.getValue();

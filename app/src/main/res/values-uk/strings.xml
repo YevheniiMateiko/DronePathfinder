@@ -9,14 +9,19 @@
     <string name="frgt_routes_desc">Тут відображатимуться усі ваші маршрути</string>
     <string name="frgt_drones_desc">Тут відображатимуться усі ваші безпілотники</string>
     <string name="menu_route_planning">Планування маршруту</string>
-    <string name="alert_delete_route_msg">Ви впевнені, що хочете видалити маршрут</string>
-    <string name="alert_delete_route_title">Видалити маршрут?</string>
-    <string name="menu_pos_answer">Так</string>
-    <string name="menu_neg_answer">Ні</string>
+    <string name="alert_msg_delete_route">Ви впевнені, що хочете видалити маршрут</string>
+    <string name="alert_title_delete_route">Видалити маршрут?</string>
+    <string name="alert_answer_positive">Так</string>
+    <string name="alert_answer_negative">Ні</string>
     <string name="menu_listview_route_name">Маршрут:</string>
     <string name="menu_listview_route_start">Початок:</string>
     <string name="menu_listview_route_end">Кінець:</string>
     <string name="menu_listview_route_length">Довжина:</string>
     <string name="menu_listview_route_km">км</string>
     <string name="menu_listview_drone_name">Безпілотник:</string>
+    <string name="alert_answer_add">Додати</string>
+    <string name="alert_answer_cancel">Скасувати</string>
+    <string name="alert_answer_save">Зберегти</string>
+    <string name="alert_title_enter_radius">Введіть радіус точки запобігання</string>
+    <string name="alert_title_enter_route_name">Введіть назву маршруту</string>
 </resources>

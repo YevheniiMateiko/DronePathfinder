@@ -1,7 +1,9 @@
 package com.example.dronepathfinder.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
@@ -12,11 +14,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.util.Log;
+import android.util.Pair;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -31,6 +36,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
@@ -44,9 +50,11 @@ public class MapActivity extends AppCompatActivity
     private GestureDetector gestureDetector;
     private DijkstraAlgorithm dijkstra;
     private List<GeoPoint> points;
+    private List<Pair<GeoPoint, Double>> avoidancePoints;
     private List<GeoPoint> shortestPath = null;
     private Map<GeoPoint, Marker> markersMap;
     private Polyline currentLine;
+    private List<Polygon> avoidanceCircles = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -61,13 +69,15 @@ public class MapActivity extends AppCompatActivity
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
-        map.setBuiltInZoomControls(true);
+        map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
 
         dijkstra = new DijkstraAlgorithm();
         points = new ArrayList<>();
+        avoidancePoints = new ArrayList<>();
         markersMap = new HashMap<>();
         currentLine = null;
+        Context context = this;
 
         Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.map_location_pin, null);
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -84,7 +94,7 @@ public class MapActivity extends AppCompatActivity
             {
                 if (points.size() > 1)
                 {
-                    saveNewRoute("New route", shortestPath);
+                    saveNewRoute(shortestPath, avoidancePoints);
                 }
             }
         });
@@ -94,67 +104,87 @@ public class MapActivity extends AppCompatActivity
             public boolean onSingleTapConfirmed(MotionEvent e)
             {
                 GeoPoint tapPoint = (GeoPoint) map.getProjection().fromPixels((int) e.getX(), (int) e.getY());
-                boolean isMarkerTapped = false;
+                Marker foundMarker = null;
 
-                Log.d("Tap", "GeoPoint: " + tapPoint);
-
-                for (Marker marker : markersMap.values())
-                {
-                    Log.d("Tap", "Marker position: " + marker.getPosition());
-
-                    if (marker.hitTest(e, map))
-                    {
-                        map.getOverlays().remove(marker);
-                        markersMap.remove(marker.getPosition());
-                        points.remove(marker.getPosition());
-                        isMarkerTapped = true;
+                for (Marker marker : markersMap.values()) {
+                    if (tapPoint.distanceToAsDouble(marker.getPosition()) <= 2500 / map.getZoomLevelDouble()) {
+                        foundMarker = marker;
                         break;
                     }
                 }
 
-                if (!isMarkerTapped)
+                if (foundMarker != null)
                 {
-                    Marker marker = new Marker(map);
-                    marker.setPosition(tapPoint);
-                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    map.getOverlays().remove(foundMarker);
+                    markersMap.remove(tapPoint);
+                    points.remove(foundMarker.getPosition());
+                }
+                else
+                {
+                    foundMarker = new Marker(map);
+                    foundMarker.setPosition(tapPoint);
+                    foundMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    foundMarker.setIcon(customIcon);
 
-                    marker.setIcon(customIcon);
-
-                    map.getOverlays().add(marker);
-                    markersMap.put(tapPoint, marker);
+                    map.getOverlays().add(foundMarker);
+                    markersMap.put(tapPoint, foundMarker);
                     points.add(tapPoint);
-
-                    Log.d("Marker", "Marker created at Lat: " + tapPoint.getLatitude() + ", Lon: " + tapPoint.getLongitude());
-
-                    /*
-                    Polygon boundsPolygon = new Polygon(map);
-                    BoundingBox boundingBox = marker.getBounds();
-                    List<GeoPoint> boundsPoints = new ArrayList<>();
-                    boundsPoints.add(new GeoPoint(boundingBox.getLatNorth(), boundingBox.getLonWest()));
-                    boundsPoints.add(new GeoPoint(boundingBox.getLatNorth(), boundingBox.getLonEast()));
-                    boundsPoints.add(new GeoPoint(boundingBox.getLatSouth(), boundingBox.getLonEast()));
-                    boundsPoints.add(new GeoPoint(boundingBox.getLatSouth(), boundingBox.getLonWest()));
-                    boundsPolygon.setPoints(boundsPoints);
-
-                    boundsPolygon.getFillPaint().setColor(Color.TRANSPARENT);
-                    boundsPolygon.getOutlinePaint().setColor(Color.RED);
-                    boundsPolygon.getOutlinePaint().setStrokeWidth(2);
-
-                    map.getOverlays().add(boundsPolygon);
-
-                    Log.d("Bounds", "Bounds created for Lat: " + boundingBox.getLatNorth() + ", Lon: " + boundingBox.getLonWest()
-                            + " to Lat: " + boundingBox.getLatSouth() + ", Lon: " + boundingBox.getLonEast());
-                     */
                 }
 
-                if (points.size() > 1)
-                {
-                    shortestPath = dijkstra.findShortestPath(points);
-                    displayShortestPath(shortestPath);
-                }
-
-                map.invalidate();
+                shortestPath = dijkstra.findShortestPath(points, avoidancePoints);
+                updateMap(shortestPath, avoidancePoints);
                 return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e)
+            {
+                GeoPoint longPressPoint = (GeoPoint) map.getProjection().fromPixels((int) e.getX(), (int) e.getY());
+                Pair<GeoPoint, Double> foundAvoidancePoint = null;
+
+                for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints) {
+                    if (longPressPoint.distanceToAsDouble(avoidancePoint.first) <= 10000.0 / map.getZoomLevelDouble()) {
+                        foundAvoidancePoint = avoidancePoint;
+                        break;
+                    }
+                }
+
+                if (foundAvoidancePoint != null)
+                {
+                    avoidancePoints.remove(foundAvoidancePoint);
+                }
+                else
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.alert_title_enter_radius);
+
+                    final EditText input = new EditText(context);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    builder.setView(input);
+
+                    builder.setPositiveButton(R.string.alert_answer_add, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            double avoidanceRadius = Double.parseDouble(input.getText().toString());
+                            avoidancePoints.add(new Pair<>(longPressPoint, avoidanceRadius));
+                            updateMap(points, avoidancePoints);
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.alert_answer_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();;
+                }
+
+                shortestPath = dijkstra.findShortestPath(points, avoidancePoints);
+                updateMap(shortestPath, avoidancePoints);
             }
         });
 
@@ -194,45 +224,68 @@ public class MapActivity extends AppCompatActivity
         map.onPause();
     }
 
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE)
+    private void updateMap(List<GeoPoint> path, List<Pair<GeoPoint, Double>> avoidancePoints) {
+        for (Polygon circle : avoidanceCircles)
         {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-            } else
-            {
-            }
+            map.getOverlays().remove(circle);
         }
-    }*/
+        avoidanceCircles.clear();
 
-    private void displayShortestPath(List<GeoPoint> path)
-    {
         if (currentLine != null)
+        {
             map.getOverlays().remove(currentLine);
-
-        Log.d("MapActivity", "Displaying shortest path with size: " + path.size());
-        for (GeoPoint point : path) {
-            Log.d("MapActivity", "Point: " + point.getLatitude() + ", " + point.getLongitude());
         }
-
         currentLine = new Polyline();
         currentLine.setPoints(path);
         currentLine.setColor(Color.BLUE);
         currentLine.setWidth(10.0f);
-
         map.getOverlays().add(currentLine);
+
+        for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints)
+        {
+            GeoPoint point = avoidancePoint.first;
+            double radius = avoidancePoint.second;
+
+            Polygon circle = new Polygon();
+            circle.setPoints(Polygon.pointsAsCircle(point, radius));
+            circle.setStrokeColor(Color.RED);
+            circle.setStrokeWidth(2.0f);
+            circle.setFillColor(Color.argb(100, 255, 0, 0));
+            map.getOverlays().add(circle);
+            avoidanceCircles.add(circle);
+        }
+
         map.invalidate();
     }
 
-    public void saveNewRoute(String name, List<GeoPoint> points)
+    public void saveNewRoute(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
     {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("route", new Route(name, points));
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.alert_title_enter_route_name);
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton(R.string.alert_answer_save, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                String name = input.getText().toString();
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("route", new Route(name, points, avoidancePoints));
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+        });
+
+        builder.setNegativeButton(R.string.alert_answer_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

@@ -13,14 +13,19 @@
     <string name="frgt_routes_desc">Here will display all your routes</string>
     <string name="frgt_drones_desc">Here will display all your drones</string>
     <string name="menu_route_planning">Route planning</string>
-    <string name="alert_delete_route_title">Delete route?</string>
-    <string name="alert_delete_route_msg">Are you sure you want to delete route</string>
-    <string name="menu_pos_answer">Yes</string>
-    <string name="menu_neg_answer">No</string>
+    <string name="alert_title_delete_route">Delete route?</string>
+    <string name="alert_msg_delete_route">Are you sure you want to delete route</string>
+    <string name="alert_answer_positive">Yes</string>
+    <string name="alert_answer_negative">No</string>
     <string name="menu_listview_route_name">Route:</string>
     <string name="menu_listview_route_start">Start:</string>
     <string name="menu_listview_route_end">End:</string>
     <string name="menu_listview_route_length">Length:</string>
     <string name="menu_listview_route_km">km</string>
     <string name="menu_listview_drone_name">Drone:</string>
+    <string name="alert_answer_add">Add</string>
+    <string name="alert_answer_cancel">Cancel</string>
+    <string name="alert_answer_save">Save</string>
+    <string name="alert_title_enter_radius">Enter radius of avoidance point</string>
+    <string name="alert_title_enter_route_name">Enter route name</string>
 </resources>
