@@ -81,7 +81,7 @@ public class RoutesFragment extends Fragment
                     lv_item_drone.setText(route.getDroneName());
                     lv_item_start.setText(String.format("%.3f, %.3f", route.getStart().first, route.getStart().second));
                     lv_item_end.setText(String.format("%.3f, %.3f", route.getEnd().first, route.getEnd().second));
-                    lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_listview_route_km)));
+                    lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_route_km)));
                     lv_item_time.setText(getFormatedTime(route.getTimeToComplete()));
                     switch (route.getStatus()) {
                         case GOOD:
@@ -113,7 +113,7 @@ public class RoutesFragment extends Fragment
                 }
         );
 
-        binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        /*binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
@@ -124,6 +124,18 @@ public class RoutesFragment extends Fragment
                     showDeleteConfirmationDialog(routeToRemove, position);
 
                 return true;
+            }
+        });*/
+
+        binding.listViewRoutes.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Route selectedRoute = adapter.getItem(position);
+                if (selectedRoute != null) {
+
+                }
             }
         });
 
@@ -219,9 +231,9 @@ public class RoutesFragment extends Fragment
         int seconds = totalSeconds % 60;
 
         return String.format("%d%s %d%s %d%s",
-                hours, getString(R.string.menu_listview_route_hours),
-                minutes, getString(R.string.menu_listview_route_minutes),
-                seconds, getString(R.string.menu_listview_route_seconds));
+                hours, getString(R.string.menu_route_hours),
+                minutes, getString(R.string.menu_route_minutes),
+                seconds, getString(R.string.menu_route_seconds));
     }
 
     @Override

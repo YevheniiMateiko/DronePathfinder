@@ -49,6 +49,7 @@ public class MapActivity extends AppCompatActivity
 {
     private MapView map = null;
     private GestureDetector gestureDetector;
+    private String selectedAlgorithm;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private AStarAlgorithm aStarAlgorithm;
     private List<GeoPoint> points;
@@ -74,6 +75,7 @@ public class MapActivity extends AppCompatActivity
         map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
 
+        selectedAlgorithm = loadSelectedAlgorithm();
         dijkstraAlgorithm = new DijkstraAlgorithm();
         aStarAlgorithm = new AStarAlgorithm();
         points = new ArrayList<>();
@@ -139,7 +141,7 @@ public class MapActivity extends AppCompatActivity
                 }
 
                 if(points.size() > 1)
-                    shortestPath = aStarAlgorithm.findShortestPath(points, avoidancePoints);
+                    shortestPath = findShortestPath(points, avoidancePoints);
 
                 updateMap(shortestPath, avoidancePoints);
 
@@ -194,7 +196,7 @@ public class MapActivity extends AppCompatActivity
                 }
 
                 if(points.size() > 1)
-                    shortestPath = aStarAlgorithm.findShortestPath(points, avoidancePoints);
+                    shortestPath = findShortestPath(points, avoidancePoints);
 
                 updateMap(shortestPath, avoidancePoints);
             }
@@ -206,36 +208,18 @@ public class MapActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public void onResume()
+    private List<GeoPoint> findShortestPath(List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
-        super.onResume();
-
-        SharedPreferences prefs = getSharedPreferences("MapPrefs", MODE_PRIVATE);
-        double lat = prefs.getFloat("Lat", 49.2352f);
-        double lon = prefs.getFloat("Lon", 28.4692f);
-        double zoom = prefs.getFloat("ZoomLevel", 13.5f);
-        map.getController().setCenter(new GeoPoint(lat, lon));
-        map.getController().setZoom(zoom);
-
-        map.onResume();
+        switch (selectedAlgorithm)
+        {
+            case "Dijkstra":
+                return dijkstraAlgorithm.findShortestPath(points, avoidancePoints);
+            case "A*":
+                return aStarAlgorithm.findShortestPath(points, avoidancePoints);
+            default:
+                return dijkstraAlgorithm.findShortestPath(points, avoidancePoints);
+        }
     }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-
-        SharedPreferences prefs = getSharedPreferences("MapPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putFloat("Lat", (float) map.getMapCenter().getLatitude());
-        editor.putFloat("Lon", (float) map.getMapCenter().getLongitude());
-        editor.putFloat("ZoomLevel", (float) map.getZoomLevelDouble());
-        editor.apply();
-
-        map.onPause();
-    }
-
 
     private void updateMap(List<GeoPoint> path, List<AvoidancePoint> avoidancePoints)
     {
@@ -275,6 +259,12 @@ public class MapActivity extends AppCompatActivity
         map.invalidate();
     }
 
+    private String loadSelectedAlgorithm()
+    {
+        SharedPreferences preferences = getApplication().getSharedPreferences("SettingsPrefs", Context.MODE_PRIVATE);
+        return preferences.getString("selectedAlgorithm", "");
+    }
+
     public void saveNewRoute(List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -304,5 +294,35 @@ public class MapActivity extends AppCompatActivity
         });
 
         builder.show();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        SharedPreferences prefs = getSharedPreferences("MapPrefs", MODE_PRIVATE);
+        double lat = prefs.getFloat("Lat", 49.2352f);
+        double lon = prefs.getFloat("Lon", 28.4692f);
+        double zoom = prefs.getFloat("ZoomLevel", 13.5f);
+        map.getController().setCenter(new GeoPoint(lat, lon));
+        map.getController().setZoom(zoom);
+
+        map.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        SharedPreferences prefs = getSharedPreferences("MapPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putFloat("Lat", (float) map.getMapCenter().getLatitude());
+        editor.putFloat("Lon", (float) map.getMapCenter().getLongitude());
+        editor.putFloat("ZoomLevel", (float) map.getZoomLevelDouble());
+        editor.apply();
+
+        map.onPause();
     }
 }

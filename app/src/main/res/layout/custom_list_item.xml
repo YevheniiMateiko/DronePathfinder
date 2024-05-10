@@ -21,7 +21,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_name_label"
@@ -29,8 +30,8 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_route_name"
-                    android:textSize="17sp"
+                    android:text="@string/menu_route_name_label"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -39,14 +40,15 @@
                     android:layout_weight="3"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_drone_name_label"
@@ -54,7 +56,7 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_drone_name"
+                    android:text="@string/menu_drone_name_label"
                     android:textStyle="bold" />
 
                 <TextView
@@ -68,7 +70,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_start_label"
@@ -76,7 +79,7 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_route_start"
+                    android:text="@string/menu_route_start_label"
                     android:textStyle="bold" />
 
                 <TextView
@@ -90,7 +93,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_end_label"
@@ -98,7 +102,7 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_route_end"
+                    android:text="@string/menu_route_end_label"
                     android:textStyle="bold" />
 
                 <TextView
@@ -112,7 +116,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_length_label"
@@ -120,7 +125,7 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_route_length"
+                    android:text="@string/menu_route_length_label"
                     android:textStyle="bold" />
 
                 <TextView
@@ -134,7 +139,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp">
 
                 <TextView
                     android:id="@+id/listview_route_time_label"
@@ -142,7 +148,7 @@
                     android:layout_weight="2"
                     android:gravity="start"
                     android:padding="2dp"
-                    android:text="@string/menu_listview_route_time"
+                    android:text="@string/menu_route_time_label"
                     android:textStyle="bold" />
 
                 <TextView
@@ -160,7 +166,6 @@
             android:id="@+id/listview_route_status_value"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="TODO"
             android:padding="5dp"
             android:src="@drawable/ic_drone" />
 

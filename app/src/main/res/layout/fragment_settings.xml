@@ -15,38 +15,32 @@
         android:paddingTop="10dp"
         android:paddingBottom="7dp">
 
-        <LinearLayout
+        <RadioGroup
+            android:id="@+id/radioGroupAlgorithms"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner_rectangle"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:paddingHorizontal="10dp"
             android:paddingVertical="7dp">
 
-            <RadioGroup
-                android:id="@+id/radioGroup"
+            <RadioButton
+                android:id="@+id/radioButtonDijkstra"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:checked="true"
+                android:text="@string/algorithm_dijkstra"
+                android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonDijkstra"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Dijkstra's Algorithm"
-                    android:textSize="16sp" />
+            <RadioButton
+                android:id="@+id/radioButtonAStar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/algorithm_astar"
+                android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonAStar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="A* Algorithm"
-                    android:textSize="16sp" />
+        </RadioGroup>
 
-                <!-- Додайте інші RadioButton для інших алгоритмів -->
-            </RadioGroup>
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

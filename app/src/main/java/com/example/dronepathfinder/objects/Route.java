@@ -20,7 +20,8 @@ public class Route extends Object implements Serializable
     private static final long serialVersionUID = 1L;
     private List<GeoPoint> points;
     private List<AvoidancePoint> avoidancePoints;
-    //private int num_of_points;
+    private int num_of_points;
+    private int num_of_avoidance_points;
     private double length; //meters
     private int timeToComplete; //seconds
     private Drone drone;
@@ -32,7 +33,8 @@ public class Route extends Object implements Serializable
 
         this.points = points;
         this.avoidancePoints = avoidancePoints;
-        //this.num_of_points = points.size();
+        this.num_of_points = points.size();
+        this.num_of_avoidance_points = avoidancePoints.size();
         this.length = calculateTotalLength(points);
         this.timeToComplete = 0;
         this.drone = null;
