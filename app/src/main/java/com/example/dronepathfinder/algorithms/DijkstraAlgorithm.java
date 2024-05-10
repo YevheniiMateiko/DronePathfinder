@@ -1,7 +1,8 @@
 package com.example.dronepathfinder.algorithms;
 
 import android.util.Log;
-import android.util.Pair;
+
+import com.example.dronepathfinder.objects.AvoidancePoint;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -16,17 +17,13 @@ public class DijkstraAlgorithm
     private Map<GeoPoint, Map<GeoPoint, Double>> graph = new HashMap<>();
     private Map<GeoPoint, GeoPoint> predecessors = new HashMap<>();
 
-    public Map<GeoPoint, Map<GeoPoint, Double>> getGraph()
+    private void initializeGraph(List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
-        return graph;
-    }
-    public Map<GeoPoint, GeoPoint> getPredecessors()
-    {
-        return predecessors;
-    }
+        Log.d("DijkstraAlgorithm", "Calling initializeGraph");
 
-    public void initializeGraph(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
-    {
+        graph.clear();
+        predecessors.clear();
+
         for (int i = 0; i < points.size() - 1; i++)
         {
             GeoPoint current = points.get(i);
@@ -38,52 +35,50 @@ public class DijkstraAlgorithm
             graph.computeIfAbsent(next, k -> new HashMap<>()).put(current, weight);
         }
 
-        for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints) {
-            GeoPoint point = avoidancePoint.first;
-            double radius = avoidancePoint.second;
+        for (AvoidancePoint avoidancePoint : avoidancePoints)
+        {
+            GeoPoint point = avoidancePoint.getCenter();
+            double radius = avoidancePoint.getRadius();
 
             for (GeoPoint existingPoint : graph.keySet())
             {
                 double distance = existingPoint.distanceToAsDouble(point);
-                if (distance <= radius) {
+
+                if (distance <= radius)
                     graph.get(existingPoint).remove(point);
-                }
             }
         }
     }
-    public List<GeoPoint> findShortestPath(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
+
+
+    public List<GeoPoint> findShortestPath(List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
-        // Ініціалізація графа зі списку точок
+        Log.d("DijkstraAlgorithm","Calling findShortestPath");
+
         initializeGraph(points, avoidancePoints);
 
-        // Визначення початкової та кінцевої точок як першої та останньої у списку
         GeoPoint start = points.get(0);
         GeoPoint end = points.get(points.size() - 1);
 
-        // Перевірка наявності початкової та кінцевої точок у графі
-        /*Log.d("DijkstraAlgorithm", "Graph contains start: "
-                + graph.containsKey(start) + ", end: " + graph.containsKey(end));*/
+        Log.d("DijkstraAlgorithm", "findShortestPath: points.size(): "
+                + points.size());
 
-        // Ініціалізація карти відстаней та пріоритетної черги
         Map<GeoPoint, Double> distances = new HashMap<>();
         PriorityQueue<GeoPoint> queue = new PriorityQueue<>((v1, v2)
                 -> distances.get(v1).compareTo(distances.get(v2)));
 
-        // Встановлення відстані до початкової точки як нуль
-        // та до всіх інших точок як нескінченність
         for (GeoPoint vertex : graph.keySet())
             distances.put(vertex, Double.MAX_VALUE);
         distances.put(start, 0.0);
 
-        // Додавання початкової точки до черги для подальшої обробки
         queue.add(start);
 
         while (!queue.isEmpty())
         {
             GeoPoint current = queue.poll();
 
-            /*Log.d("DijkstraAlgorithm", "Current vertex: "
-                    + current.getLatitude() + ", " + current.getLongitude());*/
+            Log.d("DijkstraAlgorithm", "findShortestPath: Current vertex: "
+                    + current.getLatitude() + ", " + current.getLongitude());
 
             Map<GeoPoint, Double> edges = graph.get(current);
             if (edges == null)
@@ -110,22 +105,36 @@ public class DijkstraAlgorithm
         return new ArrayList<>();
     }
 
-    public List<GeoPoint> reconstructPath(GeoPoint end)
+    private List<GeoPoint> reconstructPath(GeoPoint end)
     {
+        Log.d("DijkstraAlgorithm", "Сalling reconstructPath");
+
         List<GeoPoint> path = new ArrayList<>();
         GeoPoint step = end;
 
         if (predecessors.get(step) == null)
+        {
+            Log.d("DijkstraAlgorithm", "reconstructPath: End point has no predecessor");
             return path;
+        }
 
         path.add(step);
 
         while (predecessors.get(step) != null)
         {
             step = predecessors.get(step);
+
+            if (path.contains(step))
+            {
+                Log.d("DijkstraAlgorithm", "reconstructPath: Cycle detected. Exiting loop.");
+                break;
+            }
+
             path.add(0, step);
+            Log.d("DijkstraAlgorithm", "reconstructPath: Added step: " + step);
         }
 
+        Log.d("DijkstraAlgorithm", "reconstructPath: Path reconstruction complete");
         return path;
     }
 }

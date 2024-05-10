@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
-import android.util.Pair;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +27,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.dronepathfinder.R;
+import com.example.dronepathfinder.algorithms.AStarAlgorithm;
+import com.example.dronepathfinder.objects.AvoidancePoint;
 import com.example.dronepathfinder.objects.Route;
 import com.example.dronepathfinder.algorithms.DijkstraAlgorithm;
 
@@ -48,9 +49,10 @@ public class MapActivity extends AppCompatActivity
 {
     private MapView map = null;
     private GestureDetector gestureDetector;
-    private DijkstraAlgorithm dijkstra;
+    private DijkstraAlgorithm dijkstraAlgorithm;
+    private AStarAlgorithm aStarAlgorithm;
     private List<GeoPoint> points;
-    private List<Pair<GeoPoint, Double>> avoidancePoints;
+    private List<AvoidancePoint> avoidancePoints;
     private List<GeoPoint> shortestPath = null;
     private Map<GeoPoint, Marker> markersMap;
     private Polyline currentLine;
@@ -72,7 +74,8 @@ public class MapActivity extends AppCompatActivity
         map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
 
-        dijkstra = new DijkstraAlgorithm();
+        dijkstraAlgorithm = new DijkstraAlgorithm();
+        aStarAlgorithm = new AStarAlgorithm();
         points = new ArrayList<>();
         avoidancePoints = new ArrayList<>();
         markersMap = new HashMap<>();
@@ -115,12 +118,16 @@ public class MapActivity extends AppCompatActivity
 
                 if (foundMarker != null)
                 {
+                    Log.d("MapActivity", "Deleting marker " + foundMarker.toString());
+
                     map.getOverlays().remove(foundMarker);
                     markersMap.remove(tapPoint);
                     points.remove(foundMarker.getPosition());
                 }
                 else
                 {
+                    Log.d("MapActivity", "Adding new marker");
+
                     foundMarker = new Marker(map);
                     foundMarker.setPosition(tapPoint);
                     foundMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -131,8 +138,11 @@ public class MapActivity extends AppCompatActivity
                     points.add(tapPoint);
                 }
 
-                shortestPath = dijkstra.findShortestPath(points, avoidancePoints);
+                if(points.size() > 1)
+                    shortestPath = aStarAlgorithm.findShortestPath(points, avoidancePoints);
+
                 updateMap(shortestPath, avoidancePoints);
+
                 return true;
             }
 
@@ -140,10 +150,10 @@ public class MapActivity extends AppCompatActivity
             public void onLongPress(MotionEvent e)
             {
                 GeoPoint longPressPoint = (GeoPoint) map.getProjection().fromPixels((int) e.getX(), (int) e.getY());
-                Pair<GeoPoint, Double> foundAvoidancePoint = null;
+                AvoidancePoint foundAvoidancePoint = null;
 
-                for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints) {
-                    if (longPressPoint.distanceToAsDouble(avoidancePoint.first) <= 10000.0 / map.getZoomLevelDouble()) {
+                for (AvoidancePoint avoidancePoint : avoidancePoints) {
+                    if (longPressPoint.distanceToAsDouble(avoidancePoint.getCenter()) <= 10000.0 / map.getZoomLevelDouble()) {
                         foundAvoidancePoint = avoidancePoint;
                         break;
                     }
@@ -167,8 +177,8 @@ public class MapActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which)
                         {
                             double avoidanceRadius = Double.parseDouble(input.getText().toString());
-                            avoidancePoints.add(new Pair<>(longPressPoint, avoidanceRadius));
-                            updateMap(points, avoidancePoints);
+                            avoidancePoints.add(new AvoidancePoint(longPressPoint, avoidanceRadius));
+                            updateMap(shortestPath, avoidancePoints);
                         }
                     });
 
@@ -183,7 +193,9 @@ public class MapActivity extends AppCompatActivity
                     builder.show();;
                 }
 
-                shortestPath = dijkstra.findShortestPath(points, avoidancePoints);
+                if(points.size() > 1)
+                    shortestPath = aStarAlgorithm.findShortestPath(points, avoidancePoints);
+
                 updateMap(shortestPath, avoidancePoints);
             }
         });
@@ -224,27 +236,32 @@ public class MapActivity extends AppCompatActivity
         map.onPause();
     }
 
-    private void updateMap(List<GeoPoint> path, List<Pair<GeoPoint, Double>> avoidancePoints) {
+
+    private void updateMap(List<GeoPoint> path, List<AvoidancePoint> avoidancePoints)
+    {
+        Log.d("MapActivity","Calling updateMap");
+
         for (Polygon circle : avoidanceCircles)
-        {
             map.getOverlays().remove(circle);
-        }
+
         avoidanceCircles.clear();
 
         if (currentLine != null)
-        {
             map.getOverlays().remove(currentLine);
-        }
-        currentLine = new Polyline();
-        currentLine.setPoints(path);
-        currentLine.setColor(Color.BLUE);
-        currentLine.setWidth(10.0f);
-        map.getOverlays().add(currentLine);
 
-        for (Pair<GeoPoint, Double> avoidancePoint : avoidancePoints)
+        if (path != null)
         {
-            GeoPoint point = avoidancePoint.first;
-            double radius = avoidancePoint.second;
+            currentLine = new Polyline();
+            currentLine.setPoints(path);
+            currentLine.setColor(Color.BLUE);
+            currentLine.setWidth(10.0f);
+            map.getOverlays().add(currentLine);
+        }
+
+        for (AvoidancePoint avoidancePoint : avoidancePoints)
+        {
+            GeoPoint point = avoidancePoint.getCenter();
+            double radius = avoidancePoint.getRadius();
 
             Polygon circle = new Polygon();
             circle.setPoints(Polygon.pointsAsCircle(point, radius));
@@ -258,7 +275,7 @@ public class MapActivity extends AppCompatActivity
         map.invalidate();
     }
 
-    public void saveNewRoute(List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
+    public void saveNewRoute(List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alert_title_enter_route_name);

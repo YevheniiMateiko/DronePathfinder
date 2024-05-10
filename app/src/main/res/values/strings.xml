@@ -28,4 +28,8 @@
     <string name="alert_answer_save">Save</string>
     <string name="alert_title_enter_radius">Enter radius of avoidance point</string>
     <string name="alert_title_enter_route_name">Enter route name</string>
+    <string name="menu_listview_route_time">Time:</string>
+    <string name="menu_listview_route_hours">h</string>
+    <string name="menu_listview_route_minutes">m</string>
+    <string name="menu_listview_route_seconds">s</string>
 </resources>

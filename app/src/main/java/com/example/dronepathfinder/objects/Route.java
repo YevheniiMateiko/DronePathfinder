@@ -8,79 +8,94 @@ import org.osmdroid.util.GeoPoint;
 import java.io.Serializable;
 import java.util.List;
 
-public class Route implements Serializable {
-
+public class Route extends Object implements Serializable
+{
     public enum Status
     {
         GOOD,
         WARNING,
         BAD
-
     }
 
-    private String name;
+    private static final long serialVersionUID = 1L;
     private List<GeoPoint> points;
-    private List<Pair<GeoPoint, Double>> avoidancePoints;
+    private List<AvoidancePoint> avoidancePoints;
     //private int num_of_points;
-    private double length;
+    private double length; //meters
+    private int timeToComplete; //seconds
     private Drone drone;
     private Status status;
-    private boolean pinned;
 
-    public Route(String name, List<GeoPoint> points, List<Pair<GeoPoint, Double>> avoidancePoints)
+    public Route(String name, List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
     {
-        Log.d("New route", "Created new route with name " + name);
-        this.name = name;
+        super(name);
+
         this.points = points;
         this.avoidancePoints = avoidancePoints;
         //this.num_of_points = points.size();
         this.length = calculateTotalLength(points);
+        this.timeToComplete = 0;
         this.drone = null;
         this.status = updateStatus();
-        this.pinned = false;
+
+        Log.d("New route", "Created new route: " + name);
     }
 
-    public String getName()
-    {
-        return name;
-    }
     public List<GeoPoint> getPoints()
     {
         return points;
     }
-    public List<Pair<GeoPoint, Double>> getAvoidancePoints()
+
+    public List<AvoidancePoint> getAvoidancePoints()
     {
         return avoidancePoints;
     }
+
     public Pair<Double, Double> getStart()
     {
         return new Pair<Double, Double>(points.get(0).getLatitude(), points.get(0).getLongitude());
     }
+
     public Pair<Double, Double> getEnd()
     {
         return new Pair<Double, Double>(points.get(points.size() - 1).getLatitude(), points.get(points.size() - 1).getLongitude());
     }
+
     public double getLength()
     {
         return length;
     }
-    public Drone getDrone()
+
+    public int getTimeToComplete()
     {
-        return drone;
+        return timeToComplete;
     }
-    public Status getStatus() {
+
+    public String getDroneName()
+    {
+        if (this.drone == null)
+            return "";
+        else
+            return drone.getName();
+    }
+
+    public Status getStatus()
+    {
         return status;
     }
 
     public void setDrone(Drone drone)
     {
         this.drone = drone;
+        this.status = updateStatus();
+        this.timeToComplete = calculateTimeToComplete();
     }
+
     private Status updateStatus()
     {
         if (this.drone == null)
             return Status.WARNING;
-        else if (this.drone.getMaxFlightDistance() < this.length)
+        else if (this.drone.getFlightDistance() < this.length)
         {
             return Status.BAD;
         }
@@ -96,5 +111,10 @@ public class Route implements Serializable {
             totalLength += points.get(i).distanceToAsDouble(points.get(i + 1));
 
         return totalLength;
+    }
+
+    private int calculateTimeToComplete()
+    {
+        return (int) (this.length/this.drone.getSpeed());
     }
 }

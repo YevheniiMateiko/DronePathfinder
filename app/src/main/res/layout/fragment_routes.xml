@@ -41,6 +41,7 @@
         android:id="@+id/listViewRoutes"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:divider="@null"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp" />
 

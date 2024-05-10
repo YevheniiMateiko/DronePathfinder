@@ -71,19 +71,18 @@ public class RoutesFragment extends Fragment
                 TextView lv_item_start = convertView.findViewById(R.id.listview_route_start_value);
                 TextView lv_item_end = convertView.findViewById(R.id.listview_route_end_value);
                 TextView lv_item_length = convertView.findViewById(R.id.listview_route_length_value);
+                TextView lv_item_time = convertView.findViewById(R.id.listview_route_time_value);
                 ImageView lv_item_status = convertView.findViewById(R.id.listview_route_status_value);
 
                 Route route = getItem(position);
                 if (route != null)
                 {
                     lv_item_name.setText(route.getName());
-                    if (route.getDrone() != null)
-                    {
-                        lv_item_drone.setText(route.getDrone().getName());
-                    }
+                    lv_item_drone.setText(route.getDroneName());
                     lv_item_start.setText(String.format("%.3f, %.3f", route.getStart().first, route.getStart().second));
                     lv_item_end.setText(String.format("%.3f, %.3f", route.getEnd().first, route.getEnd().second));
                     lv_item_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_listview_route_km)));
+                    lv_item_time.setText(getFormatedTime(route.getTimeToComplete()));
                     switch (route.getStatus()) {
                         case GOOD:
                             lv_item_status.setImageResource(R.drawable.ic_checkmark);
@@ -144,7 +143,7 @@ public class RoutesFragment extends Fragment
         return root;
     }
 
-    public void updateRouteList(Route newRoute)
+    private void updateRouteList(Route newRoute)
     {
         if (routeList != null)
         {
@@ -153,7 +152,7 @@ public class RoutesFragment extends Fragment
         }
     }
 
-    public void updateRouteDesc()
+    private void updateRouteDesc()
     {
         if (!routeList.isEmpty())
             textView.setVisibility(View.GONE);
@@ -213,6 +212,17 @@ public class RoutesFragment extends Fragment
             routeList = new ArrayList<>();
     }
 
+    private String getFormatedTime(int totalSeconds)
+    {
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        return String.format("%d%s %d%s %d%s",
+                hours, getString(R.string.menu_listview_route_hours),
+                minutes, getString(R.string.menu_listview_route_minutes),
+                seconds, getString(R.string.menu_listview_route_seconds));
+    }
 
     @Override
     public void onPause()
