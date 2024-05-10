@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.dronepathfinder.ui.AboutRouteActivity;
 import com.example.dronepathfinder.ui.MapActivity;
 import com.example.dronepathfinder.R;
 import com.example.dronepathfinder.objects.Route;
@@ -133,8 +134,11 @@ public class RoutesFragment extends Fragment
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Route selectedRoute = adapter.getItem(position);
-                if (selectedRoute != null) {
-
+                if (selectedRoute != null)
+                {
+                    Intent intent = new Intent(getActivity(), AboutRouteActivity.class);
+                    intent.putExtra("route", selectedRoute);
+                    startActivity(intent);
                 }
             }
         });
