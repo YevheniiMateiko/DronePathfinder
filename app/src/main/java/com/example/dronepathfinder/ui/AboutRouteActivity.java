@@ -234,7 +234,6 @@ public class AboutRouteActivity extends AppCompatActivity {
                 route.setDrone(selectedDrone);
                 updateSpecsUI(route);
                 updateStatusUI(route);
-                // Тут можна додати код для додавання обраного безпілотника до маршруту
                 //Toast.makeText(this, "Ви обрали: " + selectedDrone.getName(), Toast.LENGTH_SHORT).show();
             }
         });
