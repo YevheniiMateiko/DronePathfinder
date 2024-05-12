@@ -28,7 +28,7 @@
                 <TextView
                     android:id="@+id/lv_drone_name_label"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:text="@string/menu_drone_name_label"
@@ -38,7 +38,7 @@
                 <TextView
                     android:id="@+id/lv_drone_name_value"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:textSize="18sp"
@@ -54,7 +54,7 @@
                 <TextView
                     android:id="@+id/lv_drone_flightdistance_label"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:text="@string/menu_drone_flightdistance_label"
@@ -64,7 +64,7 @@
                 <TextView
                     android:id="@+id/lv_drone_flightdistance_value"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:textSize="16sp" />
@@ -79,7 +79,7 @@
                 <TextView
                     android:id="@+id/lv_drone_speed_label"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:text="@string/menu_drone_speed_label"
@@ -89,7 +89,7 @@
                 <TextView
                     android:id="@+id/lv_drone_speed_value"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:textSize="16sp" />
@@ -104,7 +104,7 @@
                 <TextView
                     android:id="@+id/lv_drone_payload_label"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:text="@string/menu_drone_payload_label"
@@ -114,7 +114,7 @@
                 <TextView
                     android:id="@+id/lv_drone_payload_value"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
                     android:gravity="start"
                     android:padding="2dp"
                     android:textSize="16sp" />

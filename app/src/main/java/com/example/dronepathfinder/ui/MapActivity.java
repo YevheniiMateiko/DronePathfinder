@@ -91,7 +91,7 @@ public class MapActivity extends AppCompatActivity
         vectorDrawable.draw(canvas);
         Drawable customIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, (int) (48.0f * getResources().getDisplayMetrics().density), (int) (48.0f * getResources().getDisplayMetrics().density), true));
 
-        Button btnSaveRoute = findViewById(R.id.save_route);
+        Button btnSaveRoute = findViewById(R.id.create_route);
         btnSaveRoute.setOnClickListener(new View.OnClickListener()
         {
             @Override

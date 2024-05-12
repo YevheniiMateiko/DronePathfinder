@@ -80,62 +80,59 @@ public class DroneActivity extends AppCompatActivity
     private void handleSaveButtonBehavior()
     {
         saveButton.setOnClickListener(view -> {
-            String
-                    str_drone_name = et_drone_name.getText().toString().trim(),
-                    str_drone_flightdistance = et_drone_flightdistance.getText().toString().trim(),
-                    str_drone_speed = et_drone_speed.getText().toString().trim(),
-                    str_drone_payload = et_drone_payload.getText().toString().trim();
-
-            if (str_drone_name.isEmpty()
-                    || str_drone_flightdistance.isEmpty()
-                    || str_drone_speed.isEmpty()
-                    || str_drone_payload.isEmpty())
+            if (et_drone_name.getText().toString().trim().isEmpty()
+                    || et_drone_flightdistance.getText().toString().trim().isEmpty()
+                    || et_drone_speed.getText().toString().trim().isEmpty()
+                    || et_drone_payload.getText().toString().trim().isEmpty())
             {
                 showEmptyFieldsAlert();
             }
             else
             {
-                double flightDistance,
+                String
+                        name = et_drone_name.getText().toString(),
+                        str_flightdistance = et_drone_flightdistance.getText().toString().replace(',', '.'),
+                        str_speed = et_drone_speed.getText().toString().replace(',', '.');
+                double
+                        flightDistance,
                         speed;
                 int payload;
 
                 try
                 {
-                    flightDistance = Double.parseDouble(et_drone_flightdistance.getText().toString());
-                    speed = Double.parseDouble(et_drone_speed.getText().toString());
+                    flightDistance = 1_000 * Double.parseDouble(str_flightdistance);
+                    speed = Double.parseDouble(str_speed);
                     payload = Integer.parseInt(et_drone_payload.getText().toString());
                 }
                 catch (NumberFormatException e)
                 {
+                    name = "Smth went wrong";
                     flightDistance = 0.0;
                     speed = 0.0;
                     payload = 0;
                 }
 
+                Intent returnIntent = new Intent();
+
                 if (mode == DRONE_ABOUT_MODE)
                 {
-                    drone.setName(str_drone_name);
+                    drone.setName(name);
                     drone.setFlightDistance(flightDistance);
                     drone.setSpeed(speed);
                     drone.setPayload(payload);
 
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("mode", DRONE_ABOUT_MODE);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
+                    returnIntent.putExtra("droneUpdated", true);
+                    returnIntent.putExtra("dronePosition", dronePosition);
                 }
                 else
                 {
-                    drone = new Drone (
-                            et_drone_name.getText().toString(),
-                            flightDistance, speed, payload);
-
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("mode", DRONE_CREATION_MODE);
-                    returnIntent.putExtra("drone", drone);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
+                    drone = new Drone (name, flightDistance, speed, payload);
+                    returnIntent.putExtra("droneCreated", true);
                 }
+
+                returnIntent.putExtra("drone", drone);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
 
         });
@@ -146,9 +143,9 @@ public class DroneActivity extends AppCompatActivity
         if (drone != null)
         {
             et_drone_name.setText(drone.getName());
-            et_drone_flightdistance.setText(String.format("%.3f %s", drone.getFlightDistance()/1_000, getString(R.string.menu_km)));
-            et_drone_speed.setText(String.format("%.1f, %s", drone.getSpeed(), getString(R.string.menu_mps)));
-            et_drone_payload.setText(String.format("%.d, %s", drone.getPayload(), getString(R.string.menu_kg)));
+            et_drone_flightdistance.setText(String.format("%.3f", drone.getFlightDistance()/1_000));
+            et_drone_speed.setText(String.format("%.1f", drone.getSpeed()));
+            et_drone_payload.setText(String.format("%d", drone.getPayload()));
 
             return true;
         }
@@ -185,7 +182,6 @@ public class DroneActivity extends AppCompatActivity
     private void deleteDrone()
     {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("mode", DRONE_ABOUT_MODE);
         returnIntent.putExtra("droneDeleted", true);
         returnIntent.putExtra("dronePosition", dronePosition);
         setResult(Activity.RESULT_OK, returnIntent);

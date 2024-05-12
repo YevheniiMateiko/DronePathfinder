@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dronepathfinder.R;
 import com.example.dronepathfinder.databinding.FragmentDronesBinding;
 import com.example.dronepathfinder.objects.Drone;
-import com.example.dronepathfinder.objects.Route;
 import com.example.dronepathfinder.ui.DroneActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -101,15 +100,29 @@ public class DronesFragment extends Fragment
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        boolean routeDeleted = result.getData().getBooleanExtra("droneDeleted", false);
-                        int routePosition = result.getData().getIntExtra("dronePosition", -1);
+                        boolean
+                            droneDeleted = result.getData().getBooleanExtra("droneDeleted", false),
+                            droneUpdated = result.getData().getBooleanExtra("droneUpdated", false),
+                            droneCreated = result.getData().getBooleanExtra("droneCreated", false);
+                        int dronePosition = result.getData().getIntExtra("dronePosition", -1);
 
-                        if (routeDeleted && routePosition != -1)
+                        if (droneDeleted && dronePosition != -1)
+                            dronesList.remove(dronePosition);
+                        if (droneUpdated && dronePosition != -1)
                         {
-                            dronesList.remove(routePosition);
-                            adapter.notifyDataSetChanged();
-                            saveDronesToSharedPreferences();
+                            Drone updatedDrone = (Drone) result.getData().getSerializableExtra("drone");
+
+                            dronesList.set(dronePosition, updatedDrone);
                         }
+                        if (droneCreated)
+                        {
+                            Drone drone = (Drone) result.getData().getSerializableExtra("drone");
+                            addDroneToList(drone);
+                            updateDronesDesc();
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        saveDronesToSharedPreferences();
                     }
                 }
         );
@@ -137,8 +150,8 @@ public class DronesFragment extends Fragment
                 {
                     lv_item_name.setText(drone.getName());
                     lv_item_flightdistance.setText(String.format("%.3f %s", drone.getFlightDistance()/1_000, getString(R.string.menu_km)));
-                    lv_item_speed.setText(String.format("%.1f, %s", drone.getSpeed(), getString(R.string.menu_mps)));
-                    lv_item_payload.setText(String.format("%.d, %s", drone.getPayload(), getString(R.string.menu_kg)));
+                    lv_item_speed.setText(String.format("%.1f %s", drone.getSpeed(), getString(R.string.menu_mps)));
+                    lv_item_payload.setText(String.format("%d %s", drone.getPayload(), getString(R.string.menu_kg)));
                 }
 
                 return convertView;
@@ -158,7 +171,7 @@ public class DronesFragment extends Fragment
             }
         });
 
-        /*binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        /*binding.lvDrones.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
@@ -167,7 +180,7 @@ public class DronesFragment extends Fragment
         });*/
     }
 
-    private void updateDronesList(Drone newDrone)
+    private void addDroneToList(Drone newDrone)
     {
         if (dronesList != null)
         {
@@ -189,8 +202,8 @@ public class DronesFragment extends Fragment
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DronesPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String jsonRoutes = gson.toJson(dronesList);
-        editor.putString("SavedDrones", jsonRoutes);
+        String jsonDrones = gson.toJson(dronesList);
+        editor.putString("SavedDrones", jsonDrones);
         editor.apply();
     }
 
@@ -198,9 +211,9 @@ public class DronesFragment extends Fragment
     {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DronesPref", Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String jsonRoutes = sharedPreferences.getString("SavedDrones", null);
-        Type type = new TypeToken<ArrayList<Route>>() {}.getType();
-        dronesList = gson.fromJson(jsonRoutes, type);
+        String jsonDrones = sharedPreferences.getString("SavedDrones", null);
+        Type type = new TypeToken<ArrayList<Drone>>() {}.getType();
+        dronesList = gson.fromJson(jsonDrones, type);
 
         if (dronesList == null)
             dronesList = new ArrayList<>();

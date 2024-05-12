@@ -1,25 +1,43 @@
 package com.example.dronepathfinder.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.dronepathfinder.R;
+import com.example.dronepathfinder.objects.Drone;
 import com.example.dronepathfinder.objects.Route;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class AboutRouteActivity extends AppCompatActivity {
 
     private Route route;
     private int routePosition;
+    private Button
+            deleteButton,
+            updateButton,
+            addDroneButton;
+
+    private EditText
+            et_route_name,
+            et_route_weight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,14 +49,34 @@ public class AboutRouteActivity extends AppCompatActivity {
         route = (Route) getIntent().getSerializableExtra("route");
         routePosition = (int) getIntent().getIntExtra("routePosition", -1);
 
+        et_route_name = findViewById(R.id.et_route_name_value);
+        et_route_weight = findViewById(R.id.et_route_weight_value);
+
         updateSpecsUI(route);
         updateStatusUI(route);
 
-        Button deleteButton = findViewById(R.id.delete_route);
+        deleteButton = findViewById(R.id.delete_route);
+        updateButton = findViewById(R.id.update_route);
+        addDroneButton = findViewById(R.id.add_drone_to_route);
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDeleteConfirmationDialog();
+            }
+        });
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateRoute();
+            }
+        });
+
+        addDroneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDroneSelectionMenu();
             }
         });
 
@@ -59,26 +97,24 @@ public class AboutRouteActivity extends AppCompatActivity {
     private boolean updateSpecsUI(Route route)
     {
         TextView
-                tv_route_name = findViewById(R.id.tv_route_name_value),
                 tv_route_start = findViewById(R.id.tv_route_start_value),
                 tv_route_end = findViewById(R.id.tv_route_end_value),
                 tv_route_points = findViewById(R.id.tv_route_points_value),
                 tv_route_avoidpoints = findViewById(R.id.tv_route_avoidpoints_value),
                 tv_route_avoidpointsarea = findViewById(R.id.tv_route_avoidpointsarea_value),
-                tv_route_weight = findViewById(R.id.tv_route_weight_value),
                 tv_route_length = findViewById(R.id.tv_route_length_value),
                 tv_route_time = findViewById(R.id.tv_route_time_value),
                 tv_route_drone = findViewById(R.id.tv_route_drone_value);
 
         if (route != null)
         {
-            tv_route_name.setText(route.getName());
+            et_route_name.setText(route.getName());
             tv_route_start.setText(String.format("%.3f, %.3f", route.getStart().getLongitude(), route.getStart().getLatitude()));
             tv_route_end.setText(String.format("%.3f, %.3f", route.getEnd().getLongitude(), route.getEnd().getLatitude()));
             tv_route_points.setText(String.valueOf(route.getNumberOfPoints()));
             tv_route_avoidpoints.setText(String.valueOf(route.getNumberOfAvoidancePoints()));
             tv_route_avoidpointsarea.setText(String.format("%.3f %s", route.getAreaOfAvoidancePoints()/1_000_000, getString(R.string.menu_square_km)));
-            tv_route_weight.setText(String.format("%d %s", route.getWeight(), getString(R.string.menu_kg)));
+            et_route_weight.setText(String.format("%d", route.getWeight()));
             tv_route_length.setText(String.format("%.3f %s", route.getLength()/1_000, getString(R.string.menu_km)));
             tv_route_time.setText(getFormatedTime(route.getTimeToComplete()));
             tv_route_drone.setText(route.getDroneName());
@@ -123,6 +159,88 @@ public class AboutRouteActivity extends AppCompatActivity {
 
         return false;
     }
+
+    private void updateRoute()
+    {
+        if (et_route_name.getText().toString().trim().isEmpty()
+                || et_route_weight.getText().toString().trim().isEmpty())
+        {
+            showEmptyFieldsAlert();
+        }
+        else
+        {
+            String name = et_route_name.getText().toString();
+            int weight;
+
+            try
+            {
+                weight = Integer.parseInt(et_route_weight.getText().toString());
+            }
+            catch (NumberFormatException e)
+            {
+                weight = 0;
+            }
+
+            Intent returnIntent = new Intent();
+
+            route.setName(name);
+            route.setWeight(weight);
+
+            returnIntent.putExtra("routeUpdated", true);
+            returnIntent.putExtra("routePosition", routePosition);
+            returnIntent.putExtra("route", route);
+
+            setResult(Activity.RESULT_OK, returnIntent);
+
+            finish();
+        }
+    }
+
+    private void showEmptyFieldsAlert()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alert_not_enough_data_label))
+                .setMessage(getString(R.string.alert_msg_not_enough_data))
+                .setPositiveButton(R.string.alert_answer_ok, null)
+                .setNegativeButton(R.string.alert_answer_cancel, null)
+                .setIcon(R.drawable.ic_warning)
+                .show();
+    }
+
+    private void showDroneSelectionMenu()
+    {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("DronesPref", Context.MODE_PRIVATE);
+        String jsonDrones = sharedPreferences.getString("SavedDrones", null);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Drone>>() {}.getType();
+        ArrayList<Drone> dronesList = gson.fromJson(jsonDrones, type);
+
+        if (dronesList == null || dronesList.isEmpty())
+        {
+            Toast.makeText(this, "Список безпілотників порожній", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] droneNames = new String[dronesList.size()];
+        for (int i = 0; i < dronesList.size(); i++)
+            droneNames[i] = dronesList.get(i).getName();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Оберіть безпілотник");
+        builder.setItems(droneNames, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Drone selectedDrone = dronesList.get(which);
+                route.setDrone(selectedDrone);
+                updateSpecsUI(route);
+                updateStatusUI(route);
+                // Тут можна додати код для додавання обраного безпілотника до маршруту
+                //Toast.makeText(this, "Ви обрали: " + selectedDrone.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.show();
+    }
+
 
     private void showDeleteConfirmationDialog()
     {

@@ -6,6 +6,7 @@ import android.util.Pair;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Route extends Object implements Serializable
@@ -39,7 +40,7 @@ public class Route extends Object implements Serializable
         this.weight = weight;
         this.length = calculateTotalLength(points);
         this.timeToComplete = calculateTimeToComplete(drone);
-        this.status = updateStatus(drone);
+        this.status = updateStatus();
 
         Log.d("New route", "Created new route: " + name);
     }
@@ -105,12 +106,19 @@ public class Route extends Object implements Serializable
 
     public void setDrone(Drone drone)
     {
+        Log.d("Route", "Successfully setted drone " + drone.getName());
         this.drone = drone;
-        this.status = updateStatus(drone);
+        this.status = updateStatus();
         this.timeToComplete = calculateTimeToComplete(drone);
     }
 
-    private Status updateStatus(Drone drone)
+    public void setWeight(int weight)
+    {
+        this.weight = weight;
+        this.status = updateStatus();
+    }
+
+    private Status updateStatus()
     {
         if (drone == null)
         {

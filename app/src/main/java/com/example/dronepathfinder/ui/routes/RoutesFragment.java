@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.dronepathfinder.objects.Drone;
 import com.example.dronepathfinder.ui.AboutRouteActivity;
 import com.example.dronepathfinder.ui.MapActivity;
 import com.example.dronepathfinder.R;
@@ -38,7 +39,7 @@ public class RoutesFragment extends Fragment
     private View root;
     private FragmentRoutesBinding binding;
     private ArrayAdapter<Route> adapter;
-    private List<Route> routeList;
+    private List<Route> routesList;
     private TextView textView;
 
     @Override
@@ -97,15 +98,23 @@ public class RoutesFragment extends Fragment
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        boolean routeDeleted = result.getData().getBooleanExtra("routeDeleted", false);
+                        boolean
+                                routeDeleted = result.getData().getBooleanExtra("routeDeleted", false),
+                                routeUpdated = result.getData().getBooleanExtra("routeUpdated", false);
                         int routePosition = result.getData().getIntExtra("routePosition", -1);
 
                         if (routeDeleted && routePosition != -1)
+                            routesList.remove(routePosition);
+
+                        if (routeUpdated && routePosition != -1)
                         {
-                            routeList.remove(routePosition);
-                            adapter.notifyDataSetChanged();
-                            saveRoutesToSharedPreferences();
+                            Route updatedRoute = (Route) result.getData().getSerializableExtra("route");
+
+                            routesList.set(routePosition, updatedRoute);
                         }
+
+                        adapter.notifyDataSetChanged();
+                        saveRoutesToSharedPreferences();
                     }
                 }
         );
@@ -116,7 +125,7 @@ public class RoutesFragment extends Fragment
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null)
                     {
                         Route route = (Route) result.getData().getSerializableExtra("route");
-                        updateRouteList(route);
+                        updateRoutesList(route);
                         updateRoutesDesc();
                     }
                 }
@@ -125,7 +134,7 @@ public class RoutesFragment extends Fragment
 
     private void handleListView()
     {
-        adapter = new ArrayAdapter<Route>(getActivity(), R.layout.route_list_item, routeList)
+        adapter = new ArrayAdapter<Route>(getActivity(), R.layout.route_list_item, routesList)
         {
             @NonNull
             @Override
@@ -187,7 +196,7 @@ public class RoutesFragment extends Fragment
             }
         });
 
-        /*binding.listViewRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        /*binding.lvRoutes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
@@ -196,18 +205,18 @@ public class RoutesFragment extends Fragment
         });*/
     }
 
-    private void updateRouteList(Route newRoute)
+    private void updateRoutesList(Route newRoute)
     {
-        if (routeList != null)
+        if (routesList != null)
         {
-            routeList.add(newRoute);
+            routesList.add(newRoute);
             adapter.notifyDataSetChanged();
         }
     }
 
     private void updateRoutesDesc()
     {
-        if (!routeList.isEmpty())
+        if (!routesList.isEmpty())
             textView.setVisibility(View.GONE);
         else
             textView.setVisibility(View.VISIBLE);
@@ -218,7 +227,7 @@ public class RoutesFragment extends Fragment
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("RoutesPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String jsonRoutes = gson.toJson(routeList);
+        String jsonRoutes = gson.toJson(routesList);
         editor.putString("SavedRoutes", jsonRoutes);
         editor.apply();
     }
@@ -229,10 +238,10 @@ public class RoutesFragment extends Fragment
         Gson gson = new Gson();
         String jsonRoutes = sharedPreferences.getString("SavedRoutes", null);
         Type type = new TypeToken<ArrayList<Route>>() {}.getType();
-        routeList = gson.fromJson(jsonRoutes, type);
+        routesList = gson.fromJson(jsonRoutes, type);
 
-        if (routeList == null)
-            routeList = new ArrayList<>();
+        if (routesList == null)
+            routesList = new ArrayList<>();
     }
 
     private String getFormatedTime(int totalSeconds)
