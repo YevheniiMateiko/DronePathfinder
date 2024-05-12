@@ -53,4 +53,9 @@
     <string name="menu_drone_speed_label">Speed</string>
     <string name="menu_drone_payload_label">Load-carry</string>
     <string name="menu_algorithm">Algorithm</string>
+    <string name="hint_enter_drone_name">Enter drone name here</string>
+    <string name="hint_enter_route_name">Enter route name here</string>
+    <string name="alert_answer_ok">OK</string>
+    <string name="alert_not_enough_data_label">Not enough data!</string>
+    <string name="alert_msg_not_enough_data">Please provide all the data!</string>
 </resources>

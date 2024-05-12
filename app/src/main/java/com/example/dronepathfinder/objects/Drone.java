@@ -35,4 +35,16 @@ public class Drone extends Object implements Serializable
     public int getPayload() {
         return payload;
     }
+
+    public void setFlightDistance(double flightDistance) {
+        this.flightDistance = flightDistance;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public void setPayload(int payload) {
+        this.payload = payload;
+    }
 }

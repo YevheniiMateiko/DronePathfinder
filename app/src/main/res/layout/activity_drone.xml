@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/save_changes_to_drone"
+            android:id="@+id/save_drone"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginEnd="16dp"
@@ -49,13 +49,15 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/tv_drone_name_value"
+        <EditText
+            android:id="@+id/et_drone_name_value"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_rectangle"
+            android:hint="@string/hint_enter_drone_name"
+            android:inputType="textPersonName"
             android:paddingVertical="8dp"
             android:textAlignment="center"
             android:textSize="25sp"
@@ -97,11 +99,13 @@
                     android:text="@string/menu_drone_flightdistance_label"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/tv_drone_flightdistance_value"
+                <EditText
+                    android:id="@+id/et_drone_flightdistance_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:hint="@string/menu_km"
+                    android:inputType="numberDecimal"
                     android:textSize="16sp" />
             </TableRow>
 
@@ -118,11 +122,13 @@
                     android:text="@string/menu_drone_speed_label"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/tv_drone_speed_value"
+                <EditText
+                    android:id="@+id/et_drone_speed_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:hint="@string/menu_mps"
+                    android:inputType="numberDecimal"
                     android:textSize="16sp" />
             </TableRow>
 
@@ -139,11 +145,13 @@
                     android:text="@string/menu_drone_payload_label"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/tv_drone_payload_value"
+                <EditText
+                    android:id="@+id/et_drone_payload_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:hint="@string/menu_kg"
+                    android:inputType="number"
                     android:textSize="16sp" />
 
             </TableRow>

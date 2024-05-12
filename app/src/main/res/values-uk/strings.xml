@@ -49,4 +49,9 @@
     <string name="menu_drone_speed_label">Швидкість</string>
     <string name="menu_drone_payload_label">Вантажопідйомність</string>
     <string name="menu_algorithm">Алгоритм</string>
+    <string name="hint_enter_drone_name">Введіть назву дрона тут</string>
+    <string name="hint_enter_route_name">Введіть назву маршруту тут</string>
+    <string name="alert_answer_ok">Ок</string>
+    <string name="alert_not_enough_data_label">Недостатньо даних!</string>
+    <string name="alert_msg_not_enough_data">Будь ласка заповніть усі поля!</string>
 </resources>

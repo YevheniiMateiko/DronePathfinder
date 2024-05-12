@@ -124,7 +124,8 @@ public class AboutRouteActivity extends AppCompatActivity {
         return false;
     }
 
-    public void showDeleteConfirmationDialog() {
+    private void showDeleteConfirmationDialog()
+    {
         new AlertDialog.Builder(this)
                 .setTitle(route.getName())
                 .setMessage(getString(R.string.alert_msg_delete_route))

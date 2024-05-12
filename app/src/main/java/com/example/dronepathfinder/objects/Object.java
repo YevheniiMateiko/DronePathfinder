@@ -21,4 +21,9 @@ public class Object implements Serializable {
     {
         this.name = name;
     }
+
+    public void changePinned()
+    {
+        this.pinned = !this.pinned;
+    }
 }
