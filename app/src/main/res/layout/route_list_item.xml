@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="7dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_rectangle"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="7dp">
+
+        <TableLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_name_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_route_name_label"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_name_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_drone_name_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_drone_name_label"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_drone_name_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_start_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_route_start_label"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_start_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_end_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_route_end_label"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_end_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_length_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_route_length_label"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_length_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp">
+
+                <TextView
+                    android:id="@+id/listview_route_time_label"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:text="@string/menu_route_time_label"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/listview_route_time_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:gravity="start"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <ImageView
+            android:id="@+id/listview_route_status_value"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:src="@drawable/ic_drone" />
+
+    </LinearLayout>
+
+</LinearLayout>

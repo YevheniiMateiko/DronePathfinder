@@ -13,44 +13,55 @@ public class Route extends Object implements Serializable
     public enum Status
     {
         GOOD,
-        WARNING,
-        BAD
+        NO_DRONE,
+        ROUTE_TOO_LONG,
+        OVERWEIGHT
     }
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     private List<GeoPoint> points;
     private List<AvoidancePoint> avoidancePoints;
-    private int numberOfPoints;
-    private int numberOfAvoidancePoints;
+    private double areaOfAvoidancePoints; //meters^2
     private double length; //meters
     private int timeToComplete; //seconds
+    private int weight; //kilograms
     private Drone drone;
     private Status status;
 
-    public Route(String name, List<GeoPoint> points, List<AvoidancePoint> avoidancePoints)
+    public Route(String name, List<GeoPoint> points, List<AvoidancePoint> avoidancePoints, int weight)
     {
         super(name);
 
+        this.drone = null;
         this.points = points;
         this.avoidancePoints = avoidancePoints;
-        this.numberOfPoints = points.size();
-        this.numberOfAvoidancePoints = avoidancePoints.size();
+        this.areaOfAvoidancePoints = calculateAreaOfAvoidancePoints(avoidancePoints);
+        this.weight = weight;
         this.length = calculateTotalLength(points);
-        this.timeToComplete = 0;
-        this.drone = null;
-        this.status = updateStatus();
+        this.timeToComplete = calculateTimeToComplete(drone);
+        this.status = updateStatus(drone);
 
         Log.d("New route", "Created new route: " + name);
     }
 
-    public Pair<Double, Double> getStart()
+    public GeoPoint getStart()
     {
-        return new Pair<Double, Double>(points.get(0).getLatitude(), points.get(0).getLongitude());
+        return points.get(0);
     }
 
-    public Pair<Double, Double> getEnd()
+    public GeoPoint getEnd()
     {
-        return new Pair<Double, Double>(points.get(points.size() - 1).getLatitude(), points.get(points.size() - 1).getLongitude());
+        return points.get(points.size() - 1);
+    }
+
+    public double getAreaOfAvoidancePoints()
+    {
+        return areaOfAvoidancePoints;
+    }
+
+    public int getWeight()
+    {
+        return weight;
     }
 
     public double getLength()
@@ -65,20 +76,26 @@ public class Route extends Object implements Serializable
 
     public int getNumberOfPoints()
     {
-        return numberOfPoints;
+        if (points != null)
+            return points.size();
+
+        return 0;
     }
 
     public int getNumberOfAvoidancePoints()
     {
-        return numberOfAvoidancePoints;
+        if (avoidancePoints != null)
+            return avoidancePoints.size();
+
+        return 0;
     }
 
     public String getDroneName()
     {
-        if (this.drone == null)
-            return "";
-        else
+        if (this.drone != null)
             return drone.getName();
+
+        return "";
     }
 
     public Status getStatus()
@@ -89,20 +106,28 @@ public class Route extends Object implements Serializable
     public void setDrone(Drone drone)
     {
         this.drone = drone;
-        this.status = updateStatus();
-        this.timeToComplete = calculateTimeToComplete();
+        this.status = updateStatus(drone);
+        this.timeToComplete = calculateTimeToComplete(drone);
     }
 
-    private Status updateStatus()
+    private Status updateStatus(Drone drone)
     {
-        if (this.drone == null)
-            return Status.WARNING;
-        else if (this.drone.getFlightDistance() < this.length)
+        if (drone == null)
         {
-            return Status.BAD;
+            return Status.NO_DRONE;
+        }
+        else if (drone.getFlightDistance() < this.length)
+        {
+            return Status.ROUTE_TOO_LONG;
+        }
+        else if (drone.getPayload() < this.weight)
+        {
+            return Status.OVERWEIGHT;
         }
         else
+        {
             return Status.GOOD;
+        }
     }
 
     private double calculateTotalLength(List<GeoPoint> points)
@@ -115,8 +140,26 @@ public class Route extends Object implements Serializable
         return totalLength;
     }
 
-    private int calculateTimeToComplete()
+    private int calculateTimeToComplete(Drone drone)
     {
-        return (int) (this.length/this.drone.getSpeed());
+        if (drone != null)
+            return (int) (this.length/drone.getSpeed());
+
+        return 0;
+    }
+
+    private double calculateAreaOfAvoidancePoints(List<AvoidancePoint> avoidancePoints)
+    {
+        if(this.avoidancePoints != null)
+        {
+            double area = 0.0;
+
+            for (AvoidancePoint avoidancePoint: avoidancePoints)
+                area += avoidancePoint.getRadius() * avoidancePoint.getRadius() * 3.1415;
+
+            return area;
+        }
+
+        return 0.0;
     }
 }

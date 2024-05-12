@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/listViewRoutes"
+        android:id="@+id/lv_routes"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"

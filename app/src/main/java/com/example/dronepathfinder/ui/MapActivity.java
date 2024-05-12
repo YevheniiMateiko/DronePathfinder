@@ -212,10 +212,9 @@ public class MapActivity extends AppCompatActivity
     {
         switch (selectedAlgorithm)
         {
-            case "Dijkstra":
-                return dijkstraAlgorithm.findShortestPath(points, avoidancePoints);
             case "A*":
                 return aStarAlgorithm.findShortestPath(points, avoidancePoints);
+            case "Dijkstra":
             default:
                 return dijkstraAlgorithm.findShortestPath(points, avoidancePoints);
         }
@@ -278,8 +277,9 @@ public class MapActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which)
             {
                 String name = input.getText().toString();
+                int weight = 0;
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("route", new Route(name, points, avoidancePoints));
+                returnIntent.putExtra("route", new Route(name, points, avoidancePoints, weight));
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

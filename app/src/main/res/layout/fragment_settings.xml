@@ -5,24 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue_20"
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="7dp"
     tools:context=".ui.routes.RoutesFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:background="@drawable/rounded_corner_rectangle"
+        android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="7dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingVertical="5dp"
+            android:text="@string/menu_algorithm"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <RadioGroup
             android:id="@+id/radioGroupAlgorithms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner_rectangle"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="7dp">
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/radioButtonDijkstra"
