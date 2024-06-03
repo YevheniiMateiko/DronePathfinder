@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class AStarAlgorithm
+public class AStarAlgorithm implements Algorithm
 {
     private final Map<GeoPoint, List<GeoPoint>> adjacencyList = new HashMap<>();
     private final Map<GeoPoint, GeoPoint> cameFrom = new HashMap<>();

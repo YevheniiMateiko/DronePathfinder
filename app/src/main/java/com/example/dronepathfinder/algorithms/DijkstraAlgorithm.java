@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class DijkstraAlgorithm
+public class DijkstraAlgorithm implements Algorithm
 {
     private Map<GeoPoint, Map<GeoPoint, Double>> graph = new HashMap<>();
     private Map<GeoPoint, GeoPoint> predecessors = new HashMap<>();
