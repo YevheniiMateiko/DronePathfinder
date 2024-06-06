@@ -31,18 +31,21 @@ public class AStarAlgorithm implements Algorithm
         fScore.clear();
         openSet.clear();
 
-        for (int i = 0; i < points.size() - 1; i++)
+        List<GeoPoint> filteredPoints = new ArrayList<>(points);
+        filteredPoints.removeIf(point -> isWithinAvoidancePoint(point, avoidancePoints));
+
+        for (int i = 0; i < filteredPoints.size() - 1; i++)
         {
-            GeoPoint current = points.get(i);
-            GeoPoint next = points.get(i + 1);
+            GeoPoint current = filteredPoints.get(i);
+            GeoPoint next = filteredPoints.get(i + 1);
             adjacencyList.computeIfAbsent(current, k -> new ArrayList<>()).add(next);
             adjacencyList.computeIfAbsent(next, k -> new ArrayList<>()).add(current);
             gScore.put(current, Double.MAX_VALUE);
             fScore.put(current, Double.MAX_VALUE);
         }
 
-        GeoPoint start = points.get(0);
-        GeoPoint goal = points.get(points.size() - 1);
+        GeoPoint start = filteredPoints.get(0);
+        GeoPoint goal = filteredPoints.get(filteredPoints.size() - 1);
         gScore.put(start, 0.0);
         fScore.put(start, heuristicCostEstimate(start, goal));
 
@@ -74,6 +77,17 @@ public class AStarAlgorithm implements Algorithm
         }
 
         return new ArrayList<>();
+    }
+
+    private boolean isWithinAvoidancePoint(GeoPoint point, List<AvoidancePoint> avoidancePoints)
+    {
+        for (AvoidancePoint avoidancePoint : avoidancePoints)
+        {
+            if (point.distanceToAsDouble(avoidancePoint.getCenter()) <= avoidancePoint.getRadius()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<GeoPoint> reconstructPath(Map<GeoPoint, GeoPoint> cameFrom, GeoPoint current)

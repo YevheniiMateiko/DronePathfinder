@@ -34,20 +34,6 @@ public class DijkstraAlgorithm implements Algorithm
             graph.computeIfAbsent(current, k -> new HashMap<>()).put(next, weight);
             graph.computeIfAbsent(next, k -> new HashMap<>()).put(current, weight);
         }
-
-        for (AvoidancePoint avoidancePoint : avoidancePoints)
-        {
-            GeoPoint point = avoidancePoint.getCenter();
-            double radius = avoidancePoint.getRadius();
-
-            for (GeoPoint existingPoint : graph.keySet())
-            {
-                double distance = existingPoint.distanceToAsDouble(point);
-
-                if (distance <= radius)
-                    graph.get(existingPoint).remove(point);
-            }
-        }
     }
 
 
@@ -55,13 +41,18 @@ public class DijkstraAlgorithm implements Algorithm
     {
         Log.d("DijkstraAlgorithm","Calling findShortestPath");
 
-        initializeGraph(points, avoidancePoints);
+        List<GeoPoint> filteredPoints = new ArrayList<>(points);
+        filteredPoints.removeIf(point -> isWithinAvoidancePoint(point, avoidancePoints));
 
-        GeoPoint start = points.get(0);
-        GeoPoint end = points.get(points.size() - 1);
+        GeoPoint start = filteredPoints.get(0);
+        GeoPoint end = filteredPoints.get(filteredPoints.size() - 1);
+
+        initializeGraph(filteredPoints, avoidancePoints);
 
         Log.d("DijkstraAlgorithm", "findShortestPath: points.size(): "
                 + points.size());
+        Log.d("DijkstraAlgorithm", "findShortestPath: filteredPoints.size(): "
+                + filteredPoints.size());
 
         Map<GeoPoint, Double> distances = new HashMap<>();
         PriorityQueue<GeoPoint> queue = new PriorityQueue<>((v1, v2)
@@ -103,6 +94,17 @@ public class DijkstraAlgorithm implements Algorithm
         }
 
         return new ArrayList<>();
+    }
+
+    private boolean isWithinAvoidancePoint(GeoPoint point, List<AvoidancePoint> avoidancePoints)
+    {
+        for (AvoidancePoint avoidancePoint : avoidancePoints)
+        {
+            if (point.distanceToAsDouble(avoidancePoint.getCenter()) <= avoidancePoint.getRadius()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<GeoPoint> reconstructPath(GeoPoint end)
