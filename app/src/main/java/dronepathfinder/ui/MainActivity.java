@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui;
+package dronepathfinder.ui;
 
 import android.os.Bundle;
 import android.view.Menu;

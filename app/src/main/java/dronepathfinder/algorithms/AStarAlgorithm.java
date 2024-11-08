@@ -1,8 +1,8 @@
-package com.example.dronepathfinder.algorithms;
+package dronepathfinder.algorithms;
 
 import android.util.Log;
 
-import com.example.dronepathfinder.objects.AvoidancePoint;
+import dronepathfinder.objects.AvoidancePoint;
 
 import org.osmdroid.util.GeoPoint;
 

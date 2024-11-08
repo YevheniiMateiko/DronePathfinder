@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui;
+package dronepathfinder.ui;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.dronepathfinder.R;
-import com.example.dronepathfinder.objects.Drone;
+import dronepathfinder.objects.Drone;
 
 public class DroneActivity extends AppCompatActivity
 {

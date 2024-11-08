@@ -1,12 +1,10 @@
-package com.example.dronepathfinder.objects;
+package dronepathfinder.objects;
 
 import android.util.Log;
-import android.util.Pair;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Route extends Object implements Serializable

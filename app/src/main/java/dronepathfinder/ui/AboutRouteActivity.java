@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui;
+package dronepathfinder.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.dronepathfinder.R;
-import com.example.dronepathfinder.objects.Drone;
-import com.example.dronepathfinder.objects.Route;
+import dronepathfinder.objects.Drone;
+import dronepathfinder.objects.Route;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui.drones;
+package dronepathfinder.ui.drones;
 
 import androidx.lifecycle.ViewModel;
 

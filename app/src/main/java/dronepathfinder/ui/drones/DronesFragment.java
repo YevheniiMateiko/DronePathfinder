@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui.drones;
+package dronepathfinder.ui.drones;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +21,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dronepathfinder.R;
 import com.example.dronepathfinder.databinding.FragmentDronesBinding;
-import com.example.dronepathfinder.objects.Drone;
-import com.example.dronepathfinder.ui.DroneActivity;
+import dronepathfinder.objects.Drone;
+import dronepathfinder.ui.DroneActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui.settings;
+package dronepathfinder.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;

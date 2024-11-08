@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.objects;
+package dronepathfinder.objects;
 
 import java.io.Serializable;
 

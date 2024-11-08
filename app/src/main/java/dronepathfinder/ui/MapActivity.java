@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui;
+package dronepathfinder.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,10 +27,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.dronepathfinder.R;
-import com.example.dronepathfinder.algorithms.AStarAlgorithm;
-import com.example.dronepathfinder.objects.AvoidancePoint;
-import com.example.dronepathfinder.objects.Route;
-import com.example.dronepathfinder.algorithms.DijkstraAlgorithm;
+import dronepathfinder.algorithms.AStarAlgorithm;
+import dronepathfinder.objects.AvoidancePoint;
+import dronepathfinder.objects.Route;
+import dronepathfinder.algorithms.DijkstraAlgorithm;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;

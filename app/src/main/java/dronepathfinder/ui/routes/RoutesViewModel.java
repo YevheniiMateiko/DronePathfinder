@@ -1,4 +1,4 @@
-package com.example.dronepathfinder.ui.routes;
+package dronepathfinder.ui.routes;
 
 import androidx.lifecycle.ViewModel;
 
